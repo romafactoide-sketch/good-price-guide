@@ -430,7 +430,7 @@ function ProductsPage() {
             </DialogDescription>
           </DialogHeader>
 
-          <ProgressBar value={(step / 3) * 100} />
+          <ProgressBar value={(step / 3) * 100} label={`Etapa ${step} de 3`} />
 
           {step === 1 ? (
             <div className="grid gap-4">
