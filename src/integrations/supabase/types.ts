@@ -164,6 +164,57 @@ export type Database = {
           },
         ]
       }
+      product_channels: {
+        Row: {
+          created_at: string
+          current_price_cents: number
+          healthy_price_cents: number
+          id: string
+          minimum_price_cents: number
+          product_id: string
+          sales_channel_id: string
+          strategic_price_cents: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_price_cents?: number
+          healthy_price_cents?: number
+          id?: string
+          minimum_price_cents?: number
+          product_id: string
+          sales_channel_id: string
+          strategic_price_cents?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_price_cents?: number
+          healthy_price_cents?: number
+          id?: string
+          minimum_price_cents?: number
+          product_id?: string
+          sales_channel_id?: string
+          strategic_price_cents?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_channels_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_channels_sales_channel_id_fkey"
+            columns: ["sales_channel_id"]
+            isOneToOne: false
+            referencedRelation: "sales_channels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_direct_costs: {
         Row: {
           amount_cents: number
@@ -335,6 +386,56 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      sales_channels: {
+        Row: {
+          business_id: string
+          card_fee_percentage: number
+          commission_percentage: number
+          created_at: string
+          delivery_fee_percentage: number
+          id: string
+          marketplace_fee_percentage: number
+          name: string
+          other_fee_percentage: number
+          tax_percentage: number
+          updated_at: string
+        }
+        Insert: {
+          business_id: string
+          card_fee_percentage?: number
+          commission_percentage?: number
+          created_at?: string
+          delivery_fee_percentage?: number
+          id?: string
+          marketplace_fee_percentage?: number
+          name: string
+          other_fee_percentage?: number
+          tax_percentage?: number
+          updated_at?: string
+        }
+        Update: {
+          business_id?: string
+          card_fee_percentage?: number
+          commission_percentage?: number
+          created_at?: string
+          delivery_fee_percentage?: number
+          id?: string
+          marketplace_fee_percentage?: number
+          name?: string
+          other_fee_percentage?: number
+          tax_percentage?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_channels_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
