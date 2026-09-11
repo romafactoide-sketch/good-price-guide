@@ -13,7 +13,11 @@ import { centsToCurrencyText, currencyTextToCents, formatBRLFromCents } from "@/
 import { ensureWorkspace } from "@/lib/workspace";
 
 type CostDraft = { id?: string; name: string; category: string; amount: string };
-const initialCosts: CostDraft[] = ["Aluguel", "Energia", "Água", "Internet", "Funcionários", "Marketing", "Sistemas"].map((name) => ({ name, category: name === "Funcionários" ? "personnel" : name === "Marketing" ? "marketing" : name === "Sistemas" ? "technology" : "structure", amount: "" }));
+const initialCosts: CostDraft[] = ["Aluguel", "Energia", "Água", "Internet", "Funcionários", "Marketing", "Sistemas", "Contabilidade", "Telefone", "Outros"].map((name) => ({
+  name,
+  category: name === "Funcionários" ? "personnel" : name === "Marketing" ? "marketing" : name === "Sistemas" || name === "Telefone" ? "technology" : name === "Contabilidade" ? "administrative" : name === "Outros" ? "other" : "structure",
+  amount: "",
+}));
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({ meta: [
