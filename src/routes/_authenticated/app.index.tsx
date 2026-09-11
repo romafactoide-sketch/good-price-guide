@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import {
   Activity,
   AlertTriangle,
@@ -30,12 +31,14 @@ import {
   demoDashboard,
   demoMonthlySeries,
   demoProducts,
-  demoUser,
   pct,
   type HealthStatus,
 } from "@/lib/demo-data";
+import { formatBRLFromCents } from "@/lib/money";
+import { workspaceQuery } from "@/lib/workspace";
+import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/app/")({
+export const Route = createFileRoute("/_authenticated/app/")({
   head: () => ({
     meta: [
       { title: "Painel — PreçoSadio" },
@@ -45,6 +48,8 @@ export const Route = createFileRoute("/app/")({
       },
       { property: "og:title", content: "Painel — PreçoSadio" },
       { property: "og:description", content: "Visão geral das margens do seu negócio." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: DashboardPage,
@@ -81,12 +86,25 @@ const columns: Column<(typeof demoProducts)[number]>[] = [
 
 function DashboardPage() {
   const goalProgress = (demoDashboard.breakEven / demoDashboard.goal) * 100;
+  const { data: workspace } = useQuery(workspaceQuery);
+  const { data: fixedCosts = [] } = useQuery({
+    queryKey: ["fixed-costs", workspace?.business?.id],
+    enabled: Boolean(workspace?.business?.id),
+    queryFn: async () => {
+      const { data, error } = await supabase.from("fixed_costs").select("amount_cents").eq("business_id", workspace?.business?.id ?? "");
+      if (error) throw error;
+      return data;
+    },
+  });
+  const monthlyCommitments = fixedCosts.reduce((sum, cost) => sum + cost.amount_cents, 0) + (workspace?.business?.pro_labore_cents ?? 0);
+  const firstName = workspace?.profile.name.split(" ")[0] || "Olá";
+  const businessName = workspace?.business?.name || "seu negócio";
 
   return (
     <div className="grid gap-6">
       <PageHeader
-        title={`Olá, ${demoUser.name}`}
-        description={`Este é o panorama de ${demoUser.business} neste mês. Dados demonstrativos.`}
+        title={`Olá, ${firstName}`}
+        description={`Este é o panorama de ${businessName} neste mês.`}
         actions={
           <>
             <Button variant="subtle">Ver relatório</Button>
@@ -158,6 +176,13 @@ function DashboardPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
+          label="Compromissos mensais"
+          value={formatBRLFromCents(monthlyCommitments)}
+          icon={Activity}
+          tooltip="Soma dos custos fixos e do pró-labore cadastrados."
+          hint="Custos fixos + pró-labore"
+        />
+        <StatCard
           label="Ponto de equilíbrio"
           value={brl(demoDashboard.breakEven)}
           icon={Activity}
@@ -177,13 +202,6 @@ function DashboardPage() {
           icon={Percent}
           tone="success"
           tooltip="Média da margem de lucro de todos os produtos cadastrados."
-        />
-        <StatCard
-          label="Lucro projetado"
-          value={brl(demoDashboard.projectedProfit)}
-          icon={TrendingUp}
-          tone="success"
-          hint="Se a meta for atingida"
         />
       </div>
 

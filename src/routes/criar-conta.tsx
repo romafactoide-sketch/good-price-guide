@@ -1,8 +1,13 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { AuthLayout } from "@/components/auth/auth-layout";
+import { GoogleButton } from "@/components/auth/google-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
+import { ensureWorkspace } from "@/lib/workspace";
+import { useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/criar-conta")({
   head: () => ({
@@ -17,6 +22,8 @@ export const Route = createFileRoute("/criar-conta")({
         property: "og:description",
         content: "Comece grátis e descubra quanto cobrar para dar lucro.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: SignUpPage,
@@ -24,6 +31,12 @@ export const Route = createFileRoute("/criar-conta")({
 
 function SignUpPage() {
   const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [business, setBusiness] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   return (
     <AuthLayout
@@ -38,36 +51,54 @@ function SignUpPage() {
         </span>
       }
     >
+      <div className="grid gap-5">
+      <GoogleButton />
       <form
         className="grid gap-4"
-        onSubmit={(event) => {
+        onSubmit={async (event) => {
           event.preventDefault();
-          navigate({ to: "/app" });
+          if (password.length < 8) return setMessage("A senha precisa ter pelo menos 8 caracteres.");
+          setLoading(true);
+          setMessage("");
+          const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: { emailRedirectTo: window.location.origin, data: { name, business_name: business } },
+          });
+          setLoading(false);
+          if (error) return setMessage("Não foi possível criar sua conta. Confira os dados e tente novamente.");
+          if (!data.session) setMessage("Conta criada! Confira seu e-mail para confirmar o cadastro.");
+          else {
+            await ensureWorkspace(business);
+            navigate({ to: "/onboarding" });
+          }
         }}
       >
         <div className="grid gap-1.5">
           <Label htmlFor="name">Nome</Label>
-          <Input id="name" placeholder="Maria Souza" autoComplete="name" />
+          <Input id="name" required value={name} onChange={(event) => setName(event.target.value)} placeholder="Maria Souza" autoComplete="name" />
         </div>
         <div className="grid gap-1.5">
           <Label htmlFor="email">E-mail</Label>
-          <Input id="email" type="email" placeholder="voce@seunegocio.com" autoComplete="email" />
+          <Input id="email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="voce@seunegocio.com" autoComplete="email" />
         </div>
         <div className="grid gap-1.5">
           <Label htmlFor="password">Senha</Label>
-          <Input id="password" type="password" placeholder="Mínimo de 8 caracteres" />
+          <Input id="password" type="password" required minLength={8} value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Mínimo de 8 caracteres" autoComplete="new-password" />
         </div>
         <div className="grid gap-1.5">
           <Label htmlFor="business">Nome do negócio</Label>
-          <Input id="business" placeholder="Maria Doces" />
+          <Input id="business" required value={business} onChange={(event) => setBusiness(event.target.value)} placeholder="Maria Doces" />
         </div>
-        <Button type="submit" variant="hero" size="lg" className="mt-2 w-full">
-          Criar minha conta
+        {message ? <p className="text-center text-sm text-primary-dark">{message}</p> : null}
+        <Button type="submit" variant="hero" size="lg" className="mt-2 w-full" disabled={loading}>
+          {loading ? "Criando conta..." : "Criar minha conta"}
         </Button>
         <p className="text-center text-xs text-muted-foreground">
           Ao continuar você concorda com os termos de uso e a política de privacidade.
         </p>
       </form>
+      </div>
     </AuthLayout>
   );
 }

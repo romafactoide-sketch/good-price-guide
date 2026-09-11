@@ -15,7 +15,7 @@ import {
 import { Logo } from "@/components/brand/logo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { demoUser } from "@/lib/demo-data";
+import { UserSummary } from "@/components/app/user-summary";
 
 export const navItems = [
   { label: "Início", to: "/app", icon: Home },
@@ -65,7 +65,7 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
             <span className="min-w-0">
               <span className="block text-xs text-primary-dark/80">Plano atual</span>
               <span className="block truncate text-sm font-bold text-primary-dark">
-                {demoUser.plan}
+                Pro
               </span>
             </span>
             <Badge variant="success" className="shrink-0">
@@ -80,19 +80,7 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           </Button>
         </div>
 
-        <div className="mt-3 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 rounded-2xl px-2 py-2">
-          <span className="grid size-9 shrink-0 place-items-center rounded-full bg-gradient-primary text-xs font-bold text-primary-foreground">
-            {demoUser.initials}
-          </span>
-          <span className="min-w-0">
-            <span className="block truncate text-sm font-semibold text-foreground">
-              {demoUser.fullName}
-            </span>
-            <span className="block truncate text-xs text-muted-foreground">
-              {demoUser.business}
-            </span>
-          </span>
-        </div>
+        <div className="mt-3"><UserSummary /></div>
       </div>
     </div>
   );

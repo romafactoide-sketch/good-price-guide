@@ -14,13 +14,181 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      businesses: {
+        Row: {
+          average_ticket_cents: number | null
+          business_type: string | null
+          created_at: string
+          id: string
+          monthly_revenue_cents: number | null
+          monthly_sales: number | null
+          name: string
+          onboarding_completed: boolean
+          onboarding_step: number
+          pro_labore_cents: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          average_ticket_cents?: number | null
+          business_type?: string | null
+          created_at?: string
+          id?: string
+          monthly_revenue_cents?: number | null
+          monthly_sales?: number | null
+          name?: string
+          onboarding_completed?: boolean
+          onboarding_step?: number
+          pro_labore_cents?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          average_ticket_cents?: number | null
+          business_type?: string | null
+          created_at?: string
+          id?: string
+          monthly_revenue_cents?: number | null
+          monthly_sales?: number | null
+          name?: string
+          onboarding_completed?: boolean
+          onboarding_step?: number
+          pro_labore_cents?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "businesses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fixed_costs: {
+        Row: {
+          amount_cents: number
+          business_id: string
+          category: string
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents?: number
+          business_id: string
+          category?: string
+          created_at?: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          business_id?: string
+          category?: string
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fixed_costs_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string
+          id: string
+          name?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      ensure_my_workspace: {
+        Args: { business_name?: string }
+        Returns: {
+          average_ticket_cents: number | null
+          business_type: string | null
+          created_at: string
+          id: string
+          monthly_revenue_cents: number | null
+          monthly_sales: number | null
+          name: string
+          onboarding_completed: boolean
+          onboarding_step: number
+          pro_labore_cents: number
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "businesses"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      save_onboarding_step: {
+        Args: {
+          average_ticket_value_cents?: number
+          business_kind?: string
+          complete_onboarding?: boolean
+          monthly_revenue_value_cents?: number
+          monthly_sales_value?: number
+          pro_labore_value_cents?: number
+          step_number: number
+          target_business_id: string
+        }
+        Returns: {
+          average_ticket_cents: number | null
+          business_type: string | null
+          created_at: string
+          id: string
+          monthly_revenue_cents: number | null
+          monthly_sales: number | null
+          name: string
+          onboarding_completed: boolean
+          onboarding_step: number
+          pro_labore_cents: number
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "businesses"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       [_ in never]: never
