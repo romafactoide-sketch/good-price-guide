@@ -1,13 +1,23 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { Bell, Menu } from "lucide-react";
 import { SidebarContent } from "@/components/app/app-sidebar";
 import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { demoUser } from "@/lib/demo-data";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/app")({
+  beforeLoad: async () => {
+    const { data: business, error } = await supabase
+      .from("businesses")
+      .select("onboarding_completed")
+      .order("created_at")
+      .limit(1)
+      .maybeSingle();
+    if (error) throw error;
+    if (!business?.onboarding_completed) throw redirect({ to: "/onboarding" });
+  },
   component: AppLayout,
 });
 
@@ -40,7 +50,7 @@ function AppLayout() {
               <Bell />
             </Button>
             <span className="grid size-9 place-items-center rounded-full bg-gradient-primary text-xs font-bold text-primary-foreground">
-              {demoUser.initials}
+              PS
             </span>
           </div>
         </header>
