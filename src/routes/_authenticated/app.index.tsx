@@ -28,6 +28,10 @@ import { PageHeader } from "@/components/ui/page-header";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { StatCard } from "@/components/ui/stat-card";
 import { formatBRLFromCents } from "@/lib/money";
+import {
+  calculateBreakEvenRevenue,
+  calculateContributionMarginPercentage,
+} from "@/lib/pricing";
 import { workspaceQuery } from "@/lib/workspace";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -171,7 +175,7 @@ function DashboardPage() {
 
   const breakEvenCents =
     averageMargin !== null && averageMargin > 0 && monthlyCommitments > 0
-      ? Math.round(monthlyCommitments / (averageMargin / 100))
+      ? Math.round(calculateBreakEvenRevenue(monthlyCommitments, averageMargin))
       : null;
 
   const goalCents = workspace?.business?.monthly_revenue_cents ?? null;
