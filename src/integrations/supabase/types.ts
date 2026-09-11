@@ -105,6 +105,213 @@ export type Database = {
           },
         ]
       }
+      ingredients: {
+        Row: {
+          base_quantity: number
+          base_unit: string
+          business_id: string
+          category: string
+          created_at: string
+          id: string
+          name: string
+          purchase_date: string | null
+          purchase_price_cents: number
+          purchase_quantity: number
+          purchase_unit: string
+          supplier: string | null
+          unit_cost_cents: number
+          updated_at: string
+        }
+        Insert: {
+          base_quantity?: number
+          base_unit?: string
+          business_id: string
+          category?: string
+          created_at?: string
+          id?: string
+          name: string
+          purchase_date?: string | null
+          purchase_price_cents?: number
+          purchase_quantity?: number
+          purchase_unit?: string
+          supplier?: string | null
+          unit_cost_cents?: number
+          updated_at?: string
+        }
+        Update: {
+          base_quantity?: number
+          base_unit?: string
+          business_id?: string
+          category?: string
+          created_at?: string
+          id?: string
+          name?: string
+          purchase_date?: string | null
+          purchase_price_cents?: number
+          purchase_quantity?: number
+          purchase_unit?: string
+          supplier?: string | null
+          unit_cost_cents?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ingredients_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_direct_costs: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          id: string
+          kind: string
+          name: string
+          product_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents?: number
+          created_at?: string
+          id?: string
+          kind?: string
+          name: string
+          product_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          id?: string
+          kind?: string
+          name?: string
+          product_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_direct_costs_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_ingredients: {
+        Row: {
+          calculated_cost_cents: number
+          created_at: string
+          id: string
+          ingredient_id: string
+          product_id: string
+          quantity_used: number
+          unit_used: string
+          updated_at: string
+        }
+        Insert: {
+          calculated_cost_cents?: number
+          created_at?: string
+          id?: string
+          ingredient_id: string
+          product_id: string
+          quantity_used?: number
+          unit_used?: string
+          updated_at?: string
+        }
+        Update: {
+          calculated_cost_cents?: number
+          created_at?: string
+          id?: string
+          ingredient_id?: string
+          product_id?: string
+          quantity_used?: number
+          unit_used?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_ingredients_ingredient_id_fkey"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_ingredients_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          adjusted_cost_cents: number
+          business_id: string
+          category: string
+          created_at: string
+          current_price_cents: number
+          description: string
+          direct_cost_cents: number
+          id: string
+          image_url: string | null
+          name: string
+          status: string
+          target_margin: number
+          updated_at: string
+          waste_cost_cents: number
+          waste_percentage: number
+        }
+        Insert: {
+          adjusted_cost_cents?: number
+          business_id: string
+          category?: string
+          created_at?: string
+          current_price_cents?: number
+          description?: string
+          direct_cost_cents?: number
+          id?: string
+          image_url?: string | null
+          name: string
+          status?: string
+          target_margin?: number
+          updated_at?: string
+          waste_cost_cents?: number
+          waste_percentage?: number
+        }
+        Update: {
+          adjusted_cost_cents?: number
+          business_id?: string
+          category?: string
+          created_at?: string
+          current_price_cents?: number
+          description?: string
+          direct_cost_cents?: number
+          id?: string
+          image_url?: string | null
+          name?: string
+          status?: string
+          target_margin?: number
+          updated_at?: string
+          waste_cost_cents?: number
+          waste_percentage?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
