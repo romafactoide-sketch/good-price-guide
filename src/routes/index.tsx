@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { ArrowRight, PlayCircle, Sparkles } from "lucide-react";
 import { SiteNav } from "@/components/landing/site-nav";
 import { DashboardMockup } from "@/components/landing/dashboard-mockup";
@@ -7,6 +8,8 @@ import { HowItWorks } from "@/components/landing/how-it-works";
 import { Pricing } from "@/components/landing/pricing";
 import { SiteFooter } from "@/components/landing/site-footer";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { ensureWorkspace } from "@/lib/workspace";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -29,6 +32,14 @@ export const Route = createFileRoute("/")({
 });
 
 function LandingPage() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (!data.user) return;
+      const business = await ensureWorkspace();
+      navigate({ to: business.onboarding_completed ? "/app" : "/onboarding", replace: true });
+    });
+  }, [navigate]);
   return (
     <div className="min-h-screen bg-background">
       <SiteNav />
