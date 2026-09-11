@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Bell } from "lucide-react";
 import { ComingSoon } from "@/components/app/coming-soon";
 
-export const Route = createFileRoute("/app/alertas")({
+export const Route = createFileRoute("/_authenticated/app/alertas")({
   head: () => ({
     meta: [
       { title: "Alertas — PreçoSadio" },

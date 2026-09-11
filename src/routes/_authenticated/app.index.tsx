@@ -35,7 +35,7 @@ import {
   type HealthStatus,
 } from "@/lib/demo-data";
 
-export const Route = createFileRoute("/app/")({
+export const Route = createFileRoute("/_authenticated/app/")({
   head: () => ({
     meta: [
       { title: "Painel — PreçoSadio" },

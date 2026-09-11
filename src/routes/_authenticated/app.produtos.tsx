@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Package } from "lucide-react";
 import { ComingSoon } from "@/components/app/coming-soon";
 
-export const Route = createFileRoute("/app/produtos")({
+export const Route = createFileRoute("/_authenticated/app/produtos")({
   head: () => ({
     meta: [
       { title: "Produtos — PreçoSadio" },

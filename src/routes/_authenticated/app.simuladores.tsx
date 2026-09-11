@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SlidersHorizontal } from "lucide-react";
 import { ComingSoon } from "@/components/app/coming-soon";
 
-export const Route = createFileRoute("/app/simuladores")({
+export const Route = createFileRoute("/_authenticated/app/simuladores")({
   head: () => ({
     meta: [
       { title: "Simuladores — PreçoSadio" },
