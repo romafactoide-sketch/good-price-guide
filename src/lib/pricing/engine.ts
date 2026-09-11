@@ -62,7 +62,7 @@ export function calculateIngredientUnitCost(input: {
 /** Custo direto do produto: insumos usados + custos diretos adicionais. */
 export function calculateProductDirectCost(input: {
   ingredientCostsCents: number[];
-  extraCostsCents?: number[];
+  extraCostsCents?: number[] | undefined;
 }) {
   const sum = (list: number[], label: string) =>
     list.reduce((total, value) => total + nonNegative(value, label), 0);
@@ -146,7 +146,7 @@ export function calculateVariableFees(priceCents: number, fees: ChannelFees) {
 export function calculateContributionMargin(input: {
   priceCents: number;
   unitCostCents: number;
-  fees?: ChannelFees;
+  fees?: ChannelFees | undefined;
 }) {
   nonNegative(input.priceCents, "O preço de venda");
   nonNegative(input.unitCostCents, "O custo do produto");
@@ -158,7 +158,7 @@ export function calculateContributionMargin(input: {
 export function calculateContributionMarginPercentage(input: {
   priceCents: number;
   unitCostCents: number;
-  fees?: ChannelFees;
+  fees?: ChannelFees | undefined;
 }) {
   if (input.priceCents <= 0) {
     throw new PricingError("Informe um preço de venda maior que zero para calcular a margem.");
@@ -200,9 +200,9 @@ export function calculateMarkup(priceCents: number, baseCostCents: number) {
  */
 export function calculateRecommendedPrice(input: {
   unitCostCents: number;
-  fees?: ChannelFees;
+  fees?: ChannelFees | undefined;
   desiredMarginPercentage: number;
-  fixedCostPerUnitCents?: number;
+  fixedCostPerUnitCents?: number | undefined;
 }) {
   const cost =
     nonNegative(input.unitCostCents, "O custo do produto") +
@@ -238,10 +238,10 @@ export function allocateFixedCostPerUnit(fixedCostsCents: number, expectedUnits:
  */
 export function calculatePriceRange(input: {
   unitCostCents: number;
-  fees?: ChannelFees;
+  fees?: ChannelFees | undefined;
   targetMarginPercentage: number;
-  fixedCostPerUnitCents?: number;
-  strategicRange?: { minPercentage: number; maxPercentage: number };
+  fixedCostPerUnitCents?: number | undefined;
+  strategicRange?: { minPercentage: number; maxPercentage: number } | undefined;
 }) {
   const minimumPriceCents = calculateRecommendedPrice({
     unitCostCents: input.unitCostCents,
@@ -294,7 +294,7 @@ export function calculateBreakEvenRevenue(
 
 /** Margem de contribuição média ponderada pelo mix de vendas. */
 export function calculateWeightedContributionMargin(
-  items: { priceCents: number; unitCostCents: number; fees?: ChannelFees; monthlySales: number }[],
+  items: { priceCents: number; unitCostCents: number; fees?: ChannelFees | undefined; monthlySales: number }[],
 ) {
   let revenue = 0;
   let contribution = 0;
@@ -345,7 +345,7 @@ export function calculateMonthlyProfit(input: {
 export function calculateDiscountImpact(input: {
   priceCents: number;
   unitCostCents: number;
-  fees?: ChannelFees;
+  fees?: ChannelFees | undefined;
   discountPercentage: number;
 }) {
   const discount = percentage(input.discountPercentage, "O desconto");
