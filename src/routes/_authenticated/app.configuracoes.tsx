@@ -45,7 +45,7 @@ function SettingsPage() {
       supabase.from("businesses").update({ name: businessName.trim() }).eq("id", businessId),
     ]);
     setSaving(false);
-    if (profileResult.error || businessResult.error) return toast.error("Não foi possível salvar as alterações.");
+    if (profileResult.error || businessResult.error) { toast.error("Não foi possível salvar as alterações."); return; }
     toast.success("Dados atualizados.");
   }
 
