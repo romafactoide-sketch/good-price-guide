@@ -66,9 +66,7 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
             <span className="min-w-0">
               <span className="block text-xs text-primary-dark/80">Plano atual</span>
-              <span className="block truncate text-sm font-bold text-primary-dark">
-                Pro
-              </span>
+              <span className="block truncate text-sm font-bold text-primary-dark">Pro</span>
             </span>
             <Badge variant="success" className="shrink-0">
               Ativo
@@ -82,7 +80,9 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           </Button>
         </div>
 
-        <div className="mt-3"><UserSummary /></div>
+        <div className="mt-3">
+          <UserSummary />
+        </div>
       </div>
     </div>
   );

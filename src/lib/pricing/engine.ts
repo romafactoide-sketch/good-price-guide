@@ -294,7 +294,12 @@ export function calculateBreakEvenRevenue(
 
 /** Margem de contribuição média ponderada pelo mix de vendas. */
 export function calculateWeightedContributionMargin(
-  items: { priceCents: number; unitCostCents: number; fees?: ChannelFees | undefined; monthlySales: number }[],
+  items: {
+    priceCents: number;
+    unitCostCents: number;
+    fees?: ChannelFees | undefined;
+    monthlySales: number;
+  }[],
 ) {
   let revenue = 0;
   let contribution = 0;

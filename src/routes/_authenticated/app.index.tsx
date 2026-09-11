@@ -28,10 +28,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { StatCard } from "@/components/ui/stat-card";
 import { formatBRLFromCents } from "@/lib/money";
-import {
-  calculateBreakEvenRevenue,
-  calculateContributionMarginPercentage,
-} from "@/lib/pricing";
+import { calculateBreakEvenRevenue, calculateContributionMarginPercentage } from "@/lib/pricing";
 import { workspaceQuery } from "@/lib/workspace";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -54,12 +51,14 @@ export const Route = createFileRoute("/_authenticated/app/")({
 
 type HealthStatus = "saudavel" | "atencao" | "critico";
 
-const statusMap: Record<HealthStatus, { label: string; variant: "success" | "warning" | "danger" }> =
-  {
-    saudavel: { label: "Saudável", variant: "success" },
-    atencao: { label: "Atenção", variant: "warning" },
-    critico: { label: "Crítico", variant: "danger" },
-  };
+const statusMap: Record<
+  HealthStatus,
+  { label: string; variant: "success" | "warning" | "danger" }
+> = {
+  saudavel: { label: "Saudável", variant: "success" },
+  atencao: { label: "Atenção", variant: "warning" },
+  critico: { label: "Crítico", variant: "danger" },
+};
 
 type ProductRow = {
   id: string;
@@ -81,8 +80,18 @@ const columns: Column<ProductRow>[] = [
     header: "Produto",
     cell: (row) => <span className="font-semibold">{row.name}</span>,
   },
-  { key: "price", header: "Preço", align: "right", cell: (row) => formatBRLFromCents(row.priceCents) },
-  { key: "cost", header: "Custo", align: "right", cell: (row) => formatBRLFromCents(row.costCents) },
+  {
+    key: "price",
+    header: "Preço",
+    align: "right",
+    cell: (row) => formatBRLFromCents(row.priceCents),
+  },
+  {
+    key: "cost",
+    header: "Custo",
+    align: "right",
+    cell: (row) => formatBRLFromCents(row.costCents),
+  },
   {
     key: "margin",
     header: "Margem",
@@ -304,9 +313,7 @@ function DashboardPage() {
           icon={Activity}
           tooltip="Quanto você precisa faturar no mês para cobrir todos os custos e despesas."
           hint={
-            breakEvenCents === null
-              ? "Cadastre custos e produtos"
-              : "Faturamento mínimo do mês"
+            breakEvenCents === null ? "Cadastre custos e produtos" : "Faturamento mínimo do mês"
           }
         />
         <StatCard

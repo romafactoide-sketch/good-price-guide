@@ -98,9 +98,9 @@ describe("despesas variáveis", () => {
   });
 
   it("recusa soma de taxas de 100% ou mais", () => {
-    expect(() =>
-      totalFeePercentage({ taxPercentage: 60, cardFeePercentage: 40 }),
-    ).toThrow(PricingError);
+    expect(() => totalFeePercentage({ taxPercentage: 60, cardFeePercentage: 40 })).toThrow(
+      PricingError,
+    );
   });
 
   it("recusa taxa individual de 100%", () => {
@@ -116,9 +116,10 @@ describe("margem de contribuição", () => {
   });
 
   it("aceita margem negativa quando o preço não cobre o custo", () => {
-    expect(
-      calculateContributionMargin({ priceCents: 1000, unitCostCents: 1200 }),
-    ).toBeCloseTo(-200, 10);
+    expect(calculateContributionMargin({ priceCents: 1000, unitCostCents: 1200 })).toBeCloseTo(
+      -200,
+      10,
+    );
   });
 
   it("recusa preço zero no percentual (divisão por zero)", () => {
@@ -164,9 +165,9 @@ describe("preço recomendado", () => {
   });
 
   it("sem taxas e sem margem o preço é o próprio custo", () => {
-    expect(
-      calculateRecommendedPrice({ unitCostCents: 1450, desiredMarginPercentage: 0 }),
-    ).toBe(1450);
+    expect(calculateRecommendedPrice({ unitCostCents: 1450, desiredMarginPercentage: 0 })).toBe(
+      1450,
+    );
   });
 
   it("taxas altas elevam muito o preço", () => {

@@ -149,7 +149,10 @@ function PricingPage() {
     setChannels(channelsData);
     setProducts(productsResult.data);
     setFixedCostsCents(
-      (costsResult.data ?? []).reduce((sum: number, cost: { amount_cents: number }) => sum + Number(cost.amount_cents), 0),
+      (costsResult.data ?? []).reduce(
+        (sum: number, cost: { amount_cents: number }) => sum + Number(cost.amount_cents),
+        0,
+      ),
     );
     setChannelId((current) => current || (channelsData[0]?.id ?? ""));
   }
@@ -330,9 +333,7 @@ function PricingPage() {
     try {
       totalFeePercentage(values);
     } catch (error) {
-      toast.error(
-        error instanceof PricingError ? error.message : "Revise as taxas deste canal.",
-      );
+      toast.error(error instanceof PricingError ? error.message : "Revise as taxas deste canal.");
       return;
     }
 
@@ -651,7 +652,10 @@ function PricingPage() {
                     </thead>
                     <tbody>
                       {analyses.map((item) => (
-                        <tr key={item.product.id} className="border-b border-border/70 last:border-0">
+                        <tr
+                          key={item.product.id}
+                          className="border-b border-border/70 last:border-0"
+                        >
                           <td className="px-5 py-4">
                             <span className="font-semibold">{item.product.name}</span>
                             <span className="block text-xs text-muted-foreground">
