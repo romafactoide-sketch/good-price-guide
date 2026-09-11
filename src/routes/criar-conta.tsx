@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
+import { ensureWorkspace } from "@/lib/workspace";
+import { useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/criar-conta")({
   head: () => ({
@@ -26,6 +28,7 @@ export const Route = createFileRoute("/criar-conta")({
 });
 
 function SignUpPage() {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -63,6 +66,10 @@ function SignUpPage() {
           setLoading(false);
           if (error) return setMessage("Não foi possível criar sua conta. Confira os dados e tente novamente.");
           if (!data.session) setMessage("Conta criada! Confira seu e-mail para confirmar o cadastro.");
+          else {
+            await ensureWorkspace(business);
+            navigate({ to: "/onboarding" });
+          }
         }}
       >
         <div className="grid gap-1.5">
