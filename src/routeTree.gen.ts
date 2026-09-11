@@ -15,6 +15,15 @@ import { Route as CriarContaRouteImport } from './routes/criar-conta'
 import { Route as EntrarRouteImport } from './routes/entrar'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppAlertasRouteImport } from './routes/app.alertas'
+import { Route as AppConfiguracoesRouteImport } from './routes/app.configuracoes'
+import { Route as AppCustosRouteImport } from './routes/app.custos'
+import { Route as AppInsumosRouteImport } from './routes/app.insumos'
+import { Route as AppMetasRouteImport } from './routes/app.metas'
+import { Route as AppProdutosRouteImport } from './routes/app.produtos'
+import { Route as AppRelatoriosRouteImport } from './routes/app.relatorios'
+import { Route as AppServicosRouteImport } from './routes/app.servicos'
+import { Route as AppSimuladoresRouteImport } from './routes/app.simuladores'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +55,51 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAlertasRoute = AppAlertasRouteImport.update({
+  id: '/alertas',
+  path: '/alertas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppConfiguracoesRoute = AppConfiguracoesRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCustosRoute = AppCustosRouteImport.update({
+  id: '/custos',
+  path: '/custos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInsumosRoute = AppInsumosRouteImport.update({
+  id: '/insumos',
+  path: '/insumos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMetasRoute = AppMetasRouteImport.update({
+  id: '/metas',
+  path: '/metas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProdutosRoute = AppProdutosRouteImport.update({
+  id: '/produtos',
+  path: '/produtos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRelatoriosRoute = AppRelatoriosRouteImport.update({
+  id: '/relatorios',
+  path: '/relatorios',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppServicosRoute = AppServicosRouteImport.update({
+  id: '/servicos',
+  path: '/servicos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSimuladoresRoute = AppSimuladoresRouteImport.update({
+  id: '/simuladores',
+  path: '/simuladores',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -53,6 +107,15 @@ export interface FileRoutesByFullPath {
   '/criar-conta': typeof CriarContaRoute
   '/entrar': typeof EntrarRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
+  '/app/alertas': typeof AppAlertasRoute
+  '/app/configuracoes': typeof AppConfiguracoesRoute
+  '/app/custos': typeof AppCustosRoute
+  '/app/insumos': typeof AppInsumosRoute
+  '/app/metas': typeof AppMetasRoute
+  '/app/produtos': typeof AppProdutosRoute
+  '/app/relatorios': typeof AppRelatoriosRoute
+  '/app/servicos': typeof AppServicosRoute
+  '/app/simuladores': typeof AppSimuladoresRoute
   '/app/': typeof AppIndexRoute
 }
 export interface FileRoutesByTo {
@@ -60,6 +123,15 @@ export interface FileRoutesByTo {
   '/criar-conta': typeof CriarContaRoute
   '/entrar': typeof EntrarRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
+  '/app/alertas': typeof AppAlertasRoute
+  '/app/configuracoes': typeof AppConfiguracoesRoute
+  '/app/custos': typeof AppCustosRoute
+  '/app/insumos': typeof AppInsumosRoute
+  '/app/metas': typeof AppMetasRoute
+  '/app/produtos': typeof AppProdutosRoute
+  '/app/relatorios': typeof AppRelatoriosRoute
+  '/app/servicos': typeof AppServicosRoute
+  '/app/simuladores': typeof AppSimuladoresRoute
   '/app': typeof AppIndexRoute
 }
 export interface FileRoutesById {
@@ -69,14 +141,51 @@ export interface FileRoutesById {
   '/criar-conta': typeof CriarContaRoute
   '/entrar': typeof EntrarRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
+  '/app/alertas': typeof AppAlertasRoute
+  '/app/configuracoes': typeof AppConfiguracoesRoute
+  '/app/custos': typeof AppCustosRoute
+  '/app/insumos': typeof AppInsumosRoute
+  '/app/metas': typeof AppMetasRoute
+  '/app/produtos': typeof AppProdutosRoute
+  '/app/relatorios': typeof AppRelatoriosRoute
+  '/app/servicos': typeof AppServicosRoute
+  '/app/simuladores': typeof AppSimuladoresRoute
   '/app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/app' | '/criar-conta' | '/entrar' | '/recuperar-senha' | '/app/'
+    | '/'
+    | '/app'
+    | '/criar-conta'
+    | '/entrar'
+    | '/recuperar-senha'
+    | '/app/alertas'
+    | '/app/configuracoes'
+    | '/app/custos'
+    | '/app/insumos'
+    | '/app/metas'
+    | '/app/produtos'
+    | '/app/relatorios'
+    | '/app/servicos'
+    | '/app/simuladores'
+    | '/app/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/criar-conta' | '/entrar' | '/recuperar-senha' | '/app'
+  to:
+    | '/'
+    | '/criar-conta'
+    | '/entrar'
+    | '/recuperar-senha'
+    | '/app/alertas'
+    | '/app/configuracoes'
+    | '/app/custos'
+    | '/app/insumos'
+    | '/app/metas'
+    | '/app/produtos'
+    | '/app/relatorios'
+    | '/app/servicos'
+    | '/app/simuladores'
+    | '/app'
   id:
     | '__root__'
     | '/'
@@ -84,6 +193,15 @@ export interface FileRouteTypes {
     | '/criar-conta'
     | '/entrar'
     | '/recuperar-senha'
+    | '/app/alertas'
+    | '/app/configuracoes'
+    | '/app/custos'
+    | '/app/insumos'
+    | '/app/metas'
+    | '/app/produtos'
+    | '/app/relatorios'
+    | '/app/servicos'
+    | '/app/simuladores'
     | '/app/'
   fileRoutesById: FileRoutesById
 }
@@ -139,14 +257,95 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/alertas': {
+      id: '/app/alertas'
+      path: '/alertas'
+      fullPath: '/app/alertas'
+      preLoaderRoute: typeof AppAlertasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/configuracoes': {
+      id: '/app/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/app/configuracoes'
+      preLoaderRoute: typeof AppConfiguracoesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/custos': {
+      id: '/app/custos'
+      path: '/custos'
+      fullPath: '/app/custos'
+      preLoaderRoute: typeof AppCustosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/insumos': {
+      id: '/app/insumos'
+      path: '/insumos'
+      fullPath: '/app/insumos'
+      preLoaderRoute: typeof AppInsumosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/metas': {
+      id: '/app/metas'
+      path: '/metas'
+      fullPath: '/app/metas'
+      preLoaderRoute: typeof AppMetasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/produtos': {
+      id: '/app/produtos'
+      path: '/produtos'
+      fullPath: '/app/produtos'
+      preLoaderRoute: typeof AppProdutosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/relatorios': {
+      id: '/app/relatorios'
+      path: '/relatorios'
+      fullPath: '/app/relatorios'
+      preLoaderRoute: typeof AppRelatoriosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/servicos': {
+      id: '/app/servicos'
+      path: '/servicos'
+      fullPath: '/app/servicos'
+      preLoaderRoute: typeof AppServicosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/simuladores': {
+      id: '/app/simuladores'
+      path: '/simuladores'
+      fullPath: '/app/simuladores'
+      preLoaderRoute: typeof AppSimuladoresRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
+  AppAlertasRoute: typeof AppAlertasRoute
+  AppConfiguracoesRoute: typeof AppConfiguracoesRoute
+  AppCustosRoute: typeof AppCustosRoute
+  AppInsumosRoute: typeof AppInsumosRoute
+  AppMetasRoute: typeof AppMetasRoute
+  AppProdutosRoute: typeof AppProdutosRoute
+  AppRelatoriosRoute: typeof AppRelatoriosRoute
+  AppServicosRoute: typeof AppServicosRoute
+  AppSimuladoresRoute: typeof AppSimuladoresRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAlertasRoute: AppAlertasRoute,
+  AppConfiguracoesRoute: AppConfiguracoesRoute,
+  AppCustosRoute: AppCustosRoute,
+  AppInsumosRoute: AppInsumosRoute,
+  AppMetasRoute: AppMetasRoute,
+  AppProdutosRoute: AppProdutosRoute,
+  AppRelatoriosRoute: AppRelatoriosRoute,
+  AppServicosRoute: AppServicosRoute,
+  AppSimuladoresRoute: AppSimuladoresRoute,
   AppIndexRoute: AppIndexRoute,
 }
 
