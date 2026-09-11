@@ -56,7 +56,7 @@ function OnboardingPage() {
       setMonthlyRevenue(centsToCurrencyText(business.monthly_revenue_cents));
       const { data } = await supabase.from("fixed_costs").select("id,name,category,amount_cents").eq("business_id", business.id).order("created_at");
       if (data?.length) setCosts(data.map((cost) => ({ id: cost.id, name: cost.name, category: cost.category, amount: centsToCurrencyText(cost.amount_cents) })));
-    }).catch(() => setError("Não foi possível carregar sua configuração."));
+    }).catch((loadError) => { console.error("[onboarding:ensureWorkspace]", loadError); setError("Não foi possível carregar sua configuração."); });
   }, [navigate]);
 
   const total = useMemo(() => costs.reduce((sum, cost) => sum + currencyTextToCents(cost.amount), 0), [costs]);
@@ -87,7 +87,7 @@ function OnboardingPage() {
       const { error: saveError } = await supabase.rpc("save_onboarding_step", onboardingArgs);
       if (saveError) throw saveError;
       if (complete) navigate({ to: "/app", replace: true }); else setStep(next);
-    } catch { setError("Não foi possível salvar. Tente novamente."); } finally { setSaving(false); }
+    } catch (saveFailure) { console.error("[onboarding:save]", saveFailure); setError("Não foi possível salvar. Tente novamente."); } finally { setSaving(false); }
   }
 
   return <main className="min-h-screen bg-background px-4 py-8 sm:px-6">
