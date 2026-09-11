@@ -66,9 +66,8 @@ export const Route = createFileRoute("/_authenticated/app/produtos")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  validateSearch: (search: Record<string, unknown>) => ({
-    novo: search['novo'] === true || search['novo'] === "true",
-  }),
+  validateSearch: (search: Record<string, unknown>): { novo?: boolean } =>
+    search['novo'] === true || search['novo'] === "true" ? { novo: true } : {},
   component: ProductsPage,
 });
 
