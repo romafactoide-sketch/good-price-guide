@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureWorkspace } from "@/lib/workspace";
+import { describeAuthError } from "@/lib/auth-errors";
 import { useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/criar-conta")({
@@ -63,14 +64,34 @@ function SignUpPage() {
           const { data, error } = await supabase.auth.signUp({
             email,
             password,
-            options: { emailRedirectTo: window.location.origin, data: { name, business_name: business } },
+            options: {
+              emailRedirectTo: window.location.origin,
+              data: { name, business_name: business },
+            },
           });
-          setLoading(false);
-          if (error) return setMessage("Não foi possível criar sua conta. Confira os dados e tente novamente.");
-          if (!data.session) setMessage("Conta criada! Confira seu e-mail para confirmar o cadastro.");
-          else {
+          if (error) {
+            setLoading(false);
+            return setMessage(describeAuthError("signUp", error));
+          }
+          // Supabase devolve um usuário sem identidades quando o e-mail já existe.
+          if (data.user && (data.user.identities?.length ?? 0) === 0) {
+            setLoading(false);
+            return setMessage("Este e-mail já tem uma conta. Faça login ou recupere sua senha.");
+          }
+          // Caso B: confirmação de e-mail ativa — não há sessão ainda, e isso não é erro.
+          if (!data.session) {
+            setLoading(false);
+            return setMessage("Conta criada! Confira seu e-mail para confirmar seu cadastro.");
+          }
+          // Caso A: confirmação desativada — já existe sessão, então criamos perfil/negócio.
+          try {
             await ensureWorkspace(business);
             navigate({ to: "/onboarding" });
+          } catch (workspaceError) {
+            console.error("[auth:ensureWorkspace]", workspaceError);
+            setMessage("Sua conta foi criada, mas não conseguimos preparar seu negócio agora. Entre novamente para continuar.");
+          } finally {
+            setLoading(false);
           }
         }}
       >

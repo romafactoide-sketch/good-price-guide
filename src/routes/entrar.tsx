@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureWorkspace } from "@/lib/workspace";
+import { describeAuthError } from "@/lib/auth-errors";
 
 export const Route = createFileRoute("/entrar")({
   head: () => ({
@@ -52,12 +53,17 @@ function LoginPage() {
           setError("");
           const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
           if (signInError) {
-            setError("E-mail ou senha incorretos.");
+            setError(describeAuthError("signInWithPassword", signInError));
             setLoading(false);
             return;
           }
-          const business = await ensureWorkspace();
-          navigate({ to: business.onboarding_completed ? "/app" : "/onboarding" });
+          try {
+            const business = await ensureWorkspace();
+            navigate({ to: business.onboarding_completed ? "/app" : "/onboarding" });
+          } catch (workspaceError) {
+            setError(describeAuthError("ensureWorkspace", workspaceError));
+            setLoading(false);
+          }
         }}
       >
         <div className="grid gap-1.5">
