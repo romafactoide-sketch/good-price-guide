@@ -121,6 +121,16 @@ function ProductsPage() {
     load();
   }, []);
 
+  const { novo } = Route.useSearch();
+  const navigate = Route.useNavigate();
+
+  useEffect(() => {
+    if (!novo || loading) return;
+    showForm();
+    navigate({ search: {}, replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [novo, loading]);
+
   const ingredientsById = useMemo(
     () => new Map(ingredients.map((item) => [item.id, item])),
     [ingredients],
