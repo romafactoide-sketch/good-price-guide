@@ -143,7 +143,10 @@ function DashboardPage() {
   const rows: ProductRow[] = products.map((product) => {
     const priceCents = Number(product.current_price_cents);
     const costCents = Number(product.adjusted_cost_cents);
-    const margin = priceCents > 0 ? ((priceCents - costCents) / priceCents) * 100 : null;
+    const margin =
+      priceCents > 0
+        ? calculateContributionMarginPercentage({ priceCents, unitCostCents: costCents })
+        : null;
     const target = Number(product.target_margin);
     let status: HealthStatus = "atencao";
     if (margin === null || margin <= 0) status = "critico";
