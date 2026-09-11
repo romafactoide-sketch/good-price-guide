@@ -20,6 +20,7 @@ import { UserSummary } from "@/components/app/user-summary";
 export const navItems = [
   { label: "Início", to: "/app", icon: Home },
   { label: "Produtos", to: "/app/produtos", icon: Package },
+  { label: "Precificação", to: "/app/precificacao", icon: Calculator },
   { label: "Serviços", to: "/app/servicos", icon: Wrench },
   { label: "Insumos", to: "/app/insumos", icon: Boxes },
   { label: "Custos", to: "/app/custos", icon: Receipt },
