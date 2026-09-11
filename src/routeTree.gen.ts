@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppRouteImport } from './routes/app'
 import { Route as CriarContaRouteImport } from './routes/criar-conta'
 import { Route as EntrarRouteImport } from './routes/entrar'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
@@ -17,6 +18,11 @@ import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CriarContaRoute = CriarContaRouteImport.update({
@@ -37,12 +43,14 @@ const RecuperarSenhaRoute = RecuperarSenhaRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/app': typeof AppRoute
   '/criar-conta': typeof CriarContaRoute
   '/entrar': typeof EntrarRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/app': typeof AppRoute
   '/criar-conta': typeof CriarContaRoute
   '/entrar': typeof EntrarRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
@@ -50,20 +58,23 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/app': typeof AppRoute
   '/criar-conta': typeof CriarContaRoute
   '/entrar': typeof EntrarRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/criar-conta' | '/entrar' | '/recuperar-senha'
+  fullPaths: '/' | '/app' | '/criar-conta' | '/entrar' | '/recuperar-senha'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/criar-conta' | '/entrar' | '/recuperar-senha'
-  id: '__root__' | '/' | '/criar-conta' | '/entrar' | '/recuperar-senha'
+  to: '/' | '/app' | '/criar-conta' | '/entrar' | '/recuperar-senha'
+  id:
+    '__root__' | '/' | '/app' | '/criar-conta' | '/entrar' | '/recuperar-senha'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRoute
   CriarContaRoute: typeof CriarContaRoute
   EntrarRoute: typeof EntrarRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
@@ -76,6 +87,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/criar-conta': {
@@ -104,6 +122,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRoute,
   CriarContaRoute: CriarContaRoute,
   EntrarRoute: EntrarRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
