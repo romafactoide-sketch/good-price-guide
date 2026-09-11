@@ -1,0 +1,28 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { FileBarChart } from "lucide-react";
+import { ComingSoon } from "@/components/app/coming-soon";
+
+export const Route = createFileRoute("/app/relatorios")({
+  head: () => ({
+    meta: [
+      { title: "Relatórios — PreçoSadio" },
+      { name: "description", content: "Visões consolidadas de margem, custos e resultado." },
+      { property: "og:title", content: "Relatórios — PreçoSadio" },
+      { property: "og:description", content: "Visões consolidadas de margem, custos e resultado." },
+    ],
+  }),
+  component: Page,
+});
+
+function Page() {
+  return (
+    <ComingSoon
+      title="Relatórios"
+      description="Visões consolidadas de margem, custos e resultado."
+      icon={FileBarChart}
+      emptyTitle="Nenhum relatório disponível"
+      emptyDescription="Os relatórios aparecem aqui depois dos primeiros lançamentos."
+      actionLabel="Gerar relatório"
+    />
+  );
+}
