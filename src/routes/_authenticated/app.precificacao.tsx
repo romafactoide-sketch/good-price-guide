@@ -41,14 +41,13 @@ import {
   calculateMonthlyProfit,
   calculatePriceRange,
   calculateWeightedContributionMargin,
-  channelFees,
+  channelFees as feesOf,
   feeLabels,
   listSalesChannels,
   saveProductChannelPrices,
   totalFeePercentage,
   type SalesChannel,
 } from "@/lib/pricing";
-import { channelFees as feesOf } from "@/lib/pricing/channels";
 
 export const Route = createFileRoute("/_authenticated/app/precificacao")({
   head: () => ({
@@ -150,7 +149,7 @@ function PricingPage() {
     setChannels(channelsData);
     setProducts(productsResult.data);
     setFixedCostsCents(
-      (costsResult.data ?? []).reduce((sum, cost) => sum + Number(cost.amount_cents), 0),
+      (costsResult.data ?? []).reduce((sum: number, cost: { amount_cents: number }) => sum + Number(cost.amount_cents), 0),
     );
     setChannelId((current) => current || (channelsData[0]?.id ?? ""));
   }

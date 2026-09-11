@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import {
   Bell,
   Boxes,
+  Calculator,
   FileBarChart,
   Home,
   Package,
