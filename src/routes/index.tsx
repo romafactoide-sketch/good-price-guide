@@ -26,6 +26,8 @@ export const Route = createFileRoute("/")({
         content:
           "Precificação simples para pequenos negócios: margem, markup e ponto de equilíbrio sem planilha.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: LandingPage,

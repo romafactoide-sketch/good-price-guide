@@ -48,6 +48,8 @@ export const Route = createFileRoute("/_authenticated/app/")({
       },
       { property: "og:title", content: "Painel — PreçoSadio" },
       { property: "og:description", content: "Visão geral das margens do seu negócio." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: DashboardPage,

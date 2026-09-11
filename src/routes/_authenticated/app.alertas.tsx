@@ -9,6 +9,8 @@ export const Route = createFileRoute("/_authenticated/app/alertas")({
       { name: "description", content: "Avisos quando algum item começa a dar prejuízo." },
       { property: "og:title", content: "Alertas — PreçoSadio" },
       { property: "og:description", content: "Avisos quando algum item começa a dar prejuízo." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Page,

@@ -9,6 +9,8 @@ export const Route = createFileRoute("/_authenticated/app/produtos")({
       { name: "description", content: "Cadastre o que você vende e acompanhe a margem de cada item." },
       { property: "og:title", content: "Produtos — PreçoSadio" },
       { property: "og:description", content: "Cadastre o que você vende e acompanhe a margem de cada item." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Page,

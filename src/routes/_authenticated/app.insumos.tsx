@@ -9,6 +9,8 @@ export const Route = createFileRoute("/_authenticated/app/insumos")({
       { name: "description", content: "Materiais e ingredientes que compõem seus produtos." },
       { property: "og:title", content: "Insumos — PreçoSadio" },
       { property: "og:description", content: "Materiais e ingredientes que compõem seus produtos." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Page,

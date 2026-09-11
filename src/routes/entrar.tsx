@@ -15,6 +15,8 @@ export const Route = createFileRoute("/entrar")({
       { name: "description", content: "Acesse sua conta PreçoSadio e acompanhe suas margens." },
       { property: "og:title", content: "Entrar — PreçoSadio" },
       { property: "og:description", content: "Acesse sua conta PreçoSadio." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: LoginPage,

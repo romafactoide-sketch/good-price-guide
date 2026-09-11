@@ -14,6 +14,8 @@ export const Route = createFileRoute("/recuperar-senha")({
       { name: "description", content: "Receba um link por e-mail para criar uma nova senha." },
       { property: "og:title", content: "Recuperar senha — PreçoSadio" },
       { property: "og:description", content: "Recupere o acesso à sua conta PreçoSadio." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: RecoverPage,

@@ -22,6 +22,8 @@ export const Route = createFileRoute("/criar-conta")({
         property: "og:description",
         content: "Comece grátis e descubra quanto cobrar para dar lucro.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: SignUpPage,

@@ -9,6 +9,8 @@ export const Route = createFileRoute("/_authenticated/app/metas")({
       { name: "description", content: "Defina o lucro que você quer alcançar no mês." },
       { property: "og:title", content: "Metas — PreçoSadio" },
       { property: "og:description", content: "Defina o lucro que você quer alcançar no mês." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Page,
