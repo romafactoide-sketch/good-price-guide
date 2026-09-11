@@ -66,6 +66,8 @@ export const Route = createFileRoute("/_authenticated/app/produtos")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  validateSearch: (search: Record<string, unknown>): { novo?: boolean } =>
+    search['novo'] === true || search['novo'] === "true" ? { novo: true } : {},
   component: ProductsPage,
 });
 
@@ -118,6 +120,16 @@ function ProductsPage() {
   useEffect(() => {
     load();
   }, []);
+
+  const { novo } = Route.useSearch();
+  const navigate = Route.useNavigate();
+
+  useEffect(() => {
+    if (!novo || loading) return;
+    showForm();
+    navigate({ search: {}, replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [novo, loading]);
 
   const ingredientsById = useMemo(
     () => new Map(ingredients.map((item) => [item.id, item])),
