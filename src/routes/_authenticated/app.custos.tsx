@@ -44,7 +44,7 @@ function CostsPage() {
     const business = await ensureWorkspace();
     setBusinessId(business.id);
     const { data, error } = await supabase.from("fixed_costs").select("*").eq("business_id", business.id).order("created_at");
-    if (error) return toast.error("Não foi possível carregar os custos.");
+    if (error) { toast.error("Não foi possível carregar os custos."); return; }
     setCosts(data);
   }
   useEffect(() => { load(); }, []);
@@ -54,19 +54,19 @@ function CostsPage() {
   }
 
   async function save() {
-    if (!name.trim()) return toast.error("Informe o nome do custo.");
+    if (!name.trim()) { toast.error("Informe o nome do custo."); return; }
     setSaving(true);
     const payload = { business_id: businessId, name: name.trim(), category, amount_cents: currencyTextToCents(amount) };
     const result = editing ? await supabase.from("fixed_costs").update(payload).eq("id", editing.id) : await supabase.from("fixed_costs").insert(payload);
     setSaving(false);
-    if (result.error) return toast.error("Não foi possível salvar o custo.");
+    if (result.error) { toast.error("Não foi possível salvar o custo."); return; }
     toast.success(editing ? "Custo atualizado." : "Custo adicionado."); setOpen(false); await load();
   }
 
   async function remove(cost: FixedCost) {
     if (!window.confirm(`Excluir ${cost.name}?`)) return;
     const { error } = await supabase.from("fixed_costs").delete().eq("id", cost.id);
-    if (error) return toast.error("Não foi possível excluir o custo.");
+    if (error) { toast.error("Não foi possível excluir o custo."); return; }
     toast.success("Custo excluído."); await load();
   }
 
