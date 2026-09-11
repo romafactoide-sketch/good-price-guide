@@ -85,7 +85,7 @@ function DashboardPage() {
   return (
     <div className="grid gap-6">
       <PageHeader
-        title={`Olá, ${demoUser.name} 👋`}
+        title={`Olá, ${demoUser.name}`}
         description={`Este é o panorama de ${demoUser.business} neste mês. Dados demonstrativos.`}
         actions={
           <>
@@ -127,7 +127,7 @@ function DashboardPage() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <StatCard
-            label="Produtos cadastrados"
+            label="Produtos"
             value={String(demoDashboard.products)}
             icon={Package}
             hint="No catálogo atual"
