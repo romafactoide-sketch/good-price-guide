@@ -319,7 +319,7 @@ function DashboardPage() {
           icon={Percent}
           tone="success"
           tooltip="Média da margem de lucro de todos os produtos cadastrados."
-          hint={averageMargin === null ? "Sem dados" : undefined}
+          hint={averageMargin === null ? "Sem dados" : "Média dos produtos cadastrados"}
         />
       </div>
 
