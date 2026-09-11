@@ -1,24 +1,101 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight, PlayCircle, Sparkles } from "lucide-react";
+import { SiteNav } from "@/components/landing/site-nav";
+import { DashboardMockup } from "@/components/landing/dashboard-mockup";
+import { Benefits } from "@/components/landing/benefits";
+import { HowItWorks } from "@/components/landing/how-it-works";
+import { Pricing } from "@/components/landing/pricing";
+import { SiteFooter } from "@/components/landing/site-footer";
+import { Button } from "@/components/ui/button";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "PreçoSadio — Descubra quanto cobrar para dar lucro" },
+      {
+        name: "description",
+        content:
+          "Cadastre seus custos e descubra preço mínimo, preço saudável, margem, markup e ponto de equilíbrio do seu negócio.",
+      },
+      { property: "og:title", content: "PreçoSadio — Descubra quanto cobrar para dar lucro" },
+      {
+        property: "og:description",
+        content:
+          "Precificação simples para pequenos negócios: margem, markup e ponto de equilíbrio sem planilha.",
+      },
+    ],
+  }),
+  component: LandingPage,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function LandingPage() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen bg-background">
+      <SiteNav />
+
+      <main>
+        <section className="bg-gradient-hero">
+          <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24">
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary-soft px-3 py-1 text-xs font-semibold text-primary-dark">
+                <Sparkles className="size-3.5" />
+                Mais lucro para o seu esforço
+              </span>
+              <h1 className="mt-5 text-4xl font-extrabold leading-[1.1] text-foreground sm:text-5xl">
+                Descubra quanto cobrar para seu negócio realmente dar lucro.
+              </h1>
+              <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+                Cadastre seus custos e descubra seu preço mínimo, preço saudável, margem, markup e
+                quanto precisa vender para atingir suas metas.
+              </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Button asChild variant="hero" size="xl">
+                  <Link to="/criar-conta">
+                    Calcular meu preço grátis
+                    <ArrowRight />
+                  </Link>
+                </Button>
+                <Button asChild variant="subtle" size="xl">
+                  <a href="#como-funciona">
+                    <PlayCircle />
+                    Ver como funciona
+                  </a>
+                </Button>
+              </div>
+              <p className="mt-5 text-xs text-muted-foreground">
+                Grátis para começar • Sem cartão de crédito • Feito em português
+              </p>
+            </div>
+
+            <div className="lg:pl-6">
+              <DashboardMockup />
+            </div>
+          </div>
+        </section>
+
+        <Benefits />
+        <HowItWorks />
+        <Pricing />
+
+        <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+          <div className="rounded-3xl bg-gradient-primary px-6 py-12 text-center shadow-lift sm:px-12">
+            <h2 className="text-2xl font-extrabold text-primary-foreground sm:text-3xl">
+              Seu trabalho merece um preço saudável.
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm text-primary-foreground/85 sm:text-base">
+              Crie sua conta e veja em minutos quanto cobrar por cada produto ou serviço.
+            </p>
+            <Button asChild size="xl" variant="subtle" className="mt-7">
+              <Link to="/criar-conta">
+                Criar conta grátis
+                <ArrowRight />
+              </Link>
+            </Button>
+          </div>
+        </section>
+      </main>
+
+      <SiteFooter />
     </div>
   );
 }
