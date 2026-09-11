@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import {
   Bell,
   Boxes,
+  Calculator,
   FileBarChart,
   Home,
   Package,
@@ -20,6 +21,7 @@ import { UserSummary } from "@/components/app/user-summary";
 export const navItems = [
   { label: "Início", to: "/app", icon: Home },
   { label: "Produtos", to: "/app/produtos", icon: Package },
+  { label: "Precificação", to: "/app/precificacao", icon: Calculator },
   { label: "Serviços", to: "/app/servicos", icon: Wrench },
   { label: "Insumos", to: "/app/insumos", icon: Boxes },
   { label: "Custos", to: "/app/custos", icon: Receipt },
@@ -64,9 +66,7 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
             <span className="min-w-0">
               <span className="block text-xs text-primary-dark/80">Plano atual</span>
-              <span className="block truncate text-sm font-bold text-primary-dark">
-                Pro
-              </span>
+              <span className="block truncate text-sm font-bold text-primary-dark">Pro</span>
             </span>
             <Badge variant="success" className="shrink-0">
               Ativo
@@ -80,7 +80,9 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           </Button>
         </div>
 
-        <div className="mt-3"><UserSummary /></div>
+        <div className="mt-3">
+          <UserSummary />
+        </div>
       </div>
     </div>
   );

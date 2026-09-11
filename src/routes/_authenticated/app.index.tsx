@@ -28,6 +28,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { StatCard } from "@/components/ui/stat-card";
 import { formatBRLFromCents } from "@/lib/money";
+import { calculateBreakEvenRevenue, calculateContributionMarginPercentage } from "@/lib/pricing";
 import { workspaceQuery } from "@/lib/workspace";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -50,12 +51,14 @@ export const Route = createFileRoute("/_authenticated/app/")({
 
 type HealthStatus = "saudavel" | "atencao" | "critico";
 
-const statusMap: Record<HealthStatus, { label: string; variant: "success" | "warning" | "danger" }> =
-  {
-    saudavel: { label: "Saudável", variant: "success" },
-    atencao: { label: "Atenção", variant: "warning" },
-    critico: { label: "Crítico", variant: "danger" },
-  };
+const statusMap: Record<
+  HealthStatus,
+  { label: string; variant: "success" | "warning" | "danger" }
+> = {
+  saudavel: { label: "Saudável", variant: "success" },
+  atencao: { label: "Atenção", variant: "warning" },
+  critico: { label: "Crítico", variant: "danger" },
+};
 
 type ProductRow = {
   id: string;
@@ -77,8 +80,18 @@ const columns: Column<ProductRow>[] = [
     header: "Produto",
     cell: (row) => <span className="font-semibold">{row.name}</span>,
   },
-  { key: "price", header: "Preço", align: "right", cell: (row) => formatBRLFromCents(row.priceCents) },
-  { key: "cost", header: "Custo", align: "right", cell: (row) => formatBRLFromCents(row.costCents) },
+  {
+    key: "price",
+    header: "Preço",
+    align: "right",
+    cell: (row) => formatBRLFromCents(row.priceCents),
+  },
+  {
+    key: "cost",
+    header: "Custo",
+    align: "right",
+    cell: (row) => formatBRLFromCents(row.costCents),
+  },
   {
     key: "margin",
     header: "Margem",
@@ -143,7 +156,10 @@ function DashboardPage() {
   const rows: ProductRow[] = products.map((product) => {
     const priceCents = Number(product.current_price_cents);
     const costCents = Number(product.adjusted_cost_cents);
-    const margin = priceCents > 0 ? ((priceCents - costCents) / priceCents) * 100 : null;
+    const margin =
+      priceCents > 0
+        ? calculateContributionMarginPercentage({ priceCents, unitCostCents: costCents })
+        : null;
     const target = Number(product.target_margin);
     let status: HealthStatus = "atencao";
     if (margin === null || margin <= 0) status = "critico";
@@ -168,7 +184,7 @@ function DashboardPage() {
 
   const breakEvenCents =
     averageMargin !== null && averageMargin > 0 && monthlyCommitments > 0
-      ? Math.round(monthlyCommitments / (averageMargin / 100))
+      ? Math.round(calculateBreakEvenRevenue(monthlyCommitments, averageMargin))
       : null;
 
   const goalCents = workspace?.business?.monthly_revenue_cents ?? null;
@@ -297,9 +313,7 @@ function DashboardPage() {
           icon={Activity}
           tooltip="Quanto você precisa faturar no mês para cobrir todos os custos e despesas."
           hint={
-            breakEvenCents === null
-              ? "Cadastre custos e produtos"
-              : "Faturamento mínimo do mês"
+            breakEvenCents === null ? "Cadastre custos e produtos" : "Faturamento mínimo do mês"
           }
         />
         <StatCard
