@@ -20,6 +20,9 @@ export const Route = createFileRoute("/recuperar-senha")({
 
 function RecoverPage() {
   const [sent, setSent] = useState(false);
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   return (
     <AuthLayout
@@ -47,17 +50,25 @@ function RecoverPage() {
       ) : (
         <form
           className="grid gap-4"
-          onSubmit={(event) => {
+          onSubmit={async (event) => {
             event.preventDefault();
+            setLoading(true);
+            setError("");
+            const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+              redirectTo: `${window.location.origin}/redefinir-senha`,
+            });
+            setLoading(false);
+            if (resetError) return setError("Não foi possível enviar o link. Tente novamente.");
             setSent(true);
           }}
         >
           <div className="grid gap-1.5">
             <Label htmlFor="email">E-mail</Label>
-            <Input id="email" type="email" placeholder="voce@seunegocio.com" autoComplete="email" />
+            <Input id="email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="voce@seunegocio.com" autoComplete="email" />
           </div>
-          <Button type="submit" variant="hero" size="lg" className="mt-2 w-full">
-            Enviar link de recuperação
+          {error ? <p className="text-sm text-destructive">{error}</p> : null}
+          <Button type="submit" variant="hero" size="lg" className="mt-2 w-full" disabled={loading}>
+            {loading ? "Enviando..." : "Enviar link de recuperação"}
           </Button>
         </form>
       )}

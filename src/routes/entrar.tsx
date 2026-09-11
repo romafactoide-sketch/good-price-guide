@@ -1,8 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
 import { AuthLayout } from "@/components/auth/auth-layout";
+import { GoogleButton } from "@/components/auth/google-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
+import { ensureWorkspace } from "@/lib/workspace";
 
 export const Route = createFileRoute("/entrar")({
   head: () => ({
@@ -18,6 +22,10 @@ export const Route = createFileRoute("/entrar")({
 
 function LoginPage() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   return (
     <AuthLayout
@@ -32,16 +40,27 @@ function LoginPage() {
         </span>
       }
     >
+      <div className="grid gap-5">
+      <GoogleButton />
       <form
         className="grid gap-4"
-        onSubmit={(event) => {
+        onSubmit={async (event) => {
           event.preventDefault();
-          navigate({ to: "/app" });
+          setLoading(true);
+          setError("");
+          const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+          if (signInError) {
+            setError("E-mail ou senha incorretos.");
+            setLoading(false);
+            return;
+          }
+          const business = await ensureWorkspace();
+          navigate({ to: business.onboarding_completed ? "/app" : "/onboarding" });
         }}
       >
         <div className="grid gap-1.5">
           <Label htmlFor="email">E-mail</Label>
-          <Input id="email" type="email" placeholder="voce@seunegocio.com" autoComplete="email" />
+          <Input id="email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="voce@seunegocio.com" autoComplete="email" />
         </div>
         <div className="grid gap-1.5">
           <div className="flex items-baseline justify-between gap-3">
@@ -53,12 +72,14 @@ function LoginPage() {
               Esqueci minha senha
             </Link>
           </div>
-          <Input id="password" type="password" placeholder="••••••••" autoComplete="current-password" />
+          <Input id="password" type="password" required value={password} onChange={(event) => setPassword(event.target.value)} placeholder="••••••••" autoComplete="current-password" />
         </div>
-        <Button type="submit" variant="hero" size="lg" className="mt-2 w-full">
-          Entrar
+        {error ? <p className="text-sm text-destructive">{error}</p> : null}
+        <Button type="submit" variant="hero" size="lg" className="mt-2 w-full" disabled={loading}>
+          {loading ? "Entrando..." : "Entrar"}
         </Button>
       </form>
+      </div>
     </AuthLayout>
   );
 }
