@@ -7,12 +7,17 @@ import {
   calculateContributionMarginPercentage,
   calculateDiscountImpact,
   calculateIngredientUnitCost,
+  calculateGoalPlan,
   calculateMarkup,
+  calculateMaxHealthyDiscount,
   calculateMonthlyProfit,
   calculatePriceRange,
   calculateProductDirectCost,
   calculateRecommendedPrice,
+  calculatePriceScenario,
+  calculateUnitProfit,
   calculateVariableFees,
+  comparePriceScenarios,
   calculateWasteAdjustedCost,
   calculateWeightedContributionMargin,
   totalFeePercentage,
@@ -347,6 +352,168 @@ describe("desconto", () => {
     ).toThrow(PricingError);
     expect(() =>
       calculateDiscountImpact({ priceCents: 2000, unitCostCents: 100, discountPercentage: -5 }),
+    ).toThrow(PricingError);
+  });
+});
+
+describe("lucro unitário", () => {
+  it("desconta o rateio de custo fixo da margem de contribuição", () => {
+    const result = calculateUnitProfit({
+      priceCents: 3000,
+      unitCostCents: 1000,
+      fees: { taxPercentage: 10 },
+      fixedCostPerUnitCents: 500,
+    });
+    expect(result.contributionCents).toBeCloseTo(1700, 6);
+    expect(result.profitCents).toBeCloseTo(1200, 6);
+  });
+
+  it("sem rateio informado, lucro unitário igual à margem de contribuição", () => {
+    const result = calculateUnitProfit({ priceCents: 2000, unitCostCents: 800 });
+    expect(result.profitCents).toBeCloseTo(1200, 6);
+    expect(result.fixedCostPerUnitCents).toBe(0);
+  });
+
+  it("recusa rateio negativo", () => {
+    expect(() =>
+      calculateUnitProfit({ priceCents: 2000, unitCostCents: 800, fixedCostPerUnitCents: -1 }),
+    ).toThrow(PricingError);
+  });
+});
+
+describe("desconto máximo saudável", () => {
+  it("é zero quando o preço atual já está no preço saudável", () => {
+    const healthy = calculateRecommendedPrice({
+      unitCostCents: 1450,
+      fees: { taxPercentage: 10 },
+      desiredMarginPercentage: 20,
+    });
+    const result = calculateMaxHealthyDiscount({
+      priceCents: healthy,
+      unitCostCents: 1450,
+      fees: { taxPercentage: 10 },
+      targetMarginPercentage: 20,
+    });
+    expect(result.maxDiscountPercentage).toBeCloseTo(0, 6);
+  });
+
+  it("mantém a margem na meta exatamente no desconto máximo", () => {
+    const fees = { taxPercentage: 10 };
+    const { maxDiscountPercentage } = calculateMaxHealthyDiscount({
+      priceCents: 3000,
+      unitCostCents: 1450,
+      fees,
+      targetMarginPercentage: 20,
+    });
+    expect(maxDiscountPercentage).toBeGreaterThan(0);
+    const discounted = 3000 * (1 - maxDiscountPercentage / 100);
+    expect(
+      calculateContributionMarginPercentage({ priceCents: discounted, unitCostCents: 1450, fees }),
+    ).toBeCloseTo(20, 6);
+  });
+
+  it("com taxa zero e margem zero, o desconto máximo leva ao custo", () => {
+    const { maxDiscountPercentage } = calculateMaxHealthyDiscount({
+      priceCents: 2000,
+      unitCostCents: 1000,
+      targetMarginPercentage: 0,
+    });
+    expect(maxDiscountPercentage).toBeCloseTo(50, 6);
+  });
+
+  it("recusa preço atual zero", () => {
+    expect(() =>
+      calculateMaxHealthyDiscount({
+        priceCents: 0,
+        unitCostCents: 1000,
+        targetMarginPercentage: 10,
+      }),
+    ).toThrow(PricingError);
+  });
+});
+
+describe("cenário de preço", () => {
+  it("calcula margem, lucro unitário e lucro mensal", () => {
+    const scenario = calculatePriceScenario({
+      priceCents: 2990,
+      unitCostCents: 1000,
+      fees: { taxPercentage: 10 },
+      monthlySales: 100,
+      fixedCostsCents: 100000,
+    });
+    expect(scenario.contributionCents).toBeCloseTo(2990 - 1000 - 299, 6);
+    expect(scenario.marginPercentage).toBeCloseTo((1691 / 2990) * 100, 6);
+    expect(scenario.fixedCostPerUnitCents).toBeCloseTo(1000, 6);
+    expect(scenario.unitProfitCents).toBeCloseTo(691, 6);
+    expect(scenario.monthlyProfitCents).toBeCloseTo(1691 * 100 - 100000, 6);
+  });
+
+  it("com volume zero, o mês fica zerado e sem rateio", () => {
+    const scenario = calculatePriceScenario({
+      priceCents: 2000,
+      unitCostCents: 500,
+      monthlySales: 0,
+      fixedCostsCents: 50000,
+    });
+    expect(scenario.fixedCostPerUnitCents).toBe(0);
+    expect(scenario.monthlyContributionCents).toBe(0);
+    expect(scenario.monthlyProfitCents).toBeCloseTo(-50000, 6);
+  });
+
+  it("compara dois preços com o mesmo volume", () => {
+    const result = comparePriceScenarios({
+      currentPriceCents: 2990,
+      newPriceCents: 3490,
+      unitCostCents: 1000,
+      monthlySales: 100,
+    });
+    expect(result.unitImpactCents).toBeCloseTo(500, 6);
+    expect(result.monthlyImpactCents).toBeCloseTo(50000, 6);
+  });
+
+  it("recusa volume negativo", () => {
+    expect(() =>
+      calculatePriceScenario({ priceCents: 1000, unitCostCents: 100, monthlySales: -3 }),
+    ).toThrow(PricingError);
+  });
+});
+
+describe("plano de meta", () => {
+  it("calcula faturamento, vendas e ticket necessários", () => {
+    const plan = calculateGoalPlan({
+      targetProfitCents: 300000,
+      fixedCostsCents: 500000,
+      contributionMarginPercentage: 40,
+      averageTicketCents: 2990,
+      expectedMonthlySales: 500,
+      daysPerMonth: 30,
+    });
+    expect(plan.requiredRevenueCents).toBeCloseTo(2000000, 6);
+    expect(plan.breakEvenRevenueCents).toBeCloseTo(1250000, 6);
+    expect(plan.requiredSales).toBeCloseTo(2000000 / 2990, 6);
+    expect(plan.requiredSalesPerDay).toBeCloseTo(2000000 / 2990 / 30, 6);
+    expect(plan.requiredTicketCents).toBeCloseTo(4000, 6);
+  });
+
+  it("sem ticket médio informado não estima quantidade de vendas", () => {
+    const plan = calculateGoalPlan({
+      targetProfitCents: 0,
+      fixedCostsCents: 100000,
+      contributionMarginPercentage: 50,
+    });
+    expect(plan.requiredRevenueCents).toBeCloseTo(200000, 6);
+    expect(plan.requiredSales).toBeNull();
+    expect(plan.requiredSalesPerDay).toBeNull();
+    expect(plan.requiredTicketCents).toBeNull();
+  });
+
+  it("recusa margem de contribuição média zero ou negativa", () => {
+    expect(() =>
+      calculateGoalPlan({
+        targetProfitCents: 1000,
+        fixedCostsCents: 1000,
+        contributionMarginPercentage: 0,
+      }),
     ).toThrow(PricingError);
   });
 });

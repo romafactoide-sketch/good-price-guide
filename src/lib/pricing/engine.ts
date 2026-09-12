@@ -382,3 +382,155 @@ export function calculateDiscountImpact(input: {
     isBelowCost: discountedMarginCents < 0,
   };
 }
+
+/* ------------------------------------------------------------------ */
+/* Lucro unitário e cenários de preço                                  */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Lucro unitário estimado: margem de contribuição menos o rateio de custo
+ * fixo por unidade. Sem base operacional informada, o rateio é zero e o
+ * resultado equivale à margem de contribuição.
+ */
+export function calculateUnitProfit(input: {
+  priceCents: number;
+  unitCostCents: number;
+  fees?: ChannelFees | undefined;
+  fixedCostPerUnitCents?: number | undefined;
+}) {
+  const contributionCents = calculateContributionMargin({
+    priceCents: input.priceCents,
+    unitCostCents: input.unitCostCents,
+    ...(input.fees ? { fees: input.fees } : {}),
+  });
+  const fixedCostPerUnitCents = nonNegative(
+    input.fixedCostPerUnitCents ?? 0,
+    "O rateio de custo fixo",
+  );
+  return {
+    contributionCents,
+    fixedCostPerUnitCents,
+    profitCents: contributionCents - fixedCostPerUnitCents,
+  };
+}
+
+/**
+ * Maior desconto (%) que ainda mantém a margem de contribuição na meta.
+ * Como MC% = 1 − taxas − custo/preço, o menor preço aceitável é exatamente
+ * o preço saudável; acima desse desconto a margem cai abaixo da meta.
+ */
+export function calculateMaxHealthyDiscount(input: {
+  priceCents: number;
+  unitCostCents: number;
+  fees?: ChannelFees | undefined;
+  targetMarginPercentage: number;
+}) {
+  if (input.priceCents <= 0) {
+    throw new PricingError("Informe o preço atual para calcular o desconto máximo.");
+  }
+  const healthyPriceCents = calculateRecommendedPrice({
+    unitCostCents: input.unitCostCents,
+    fees: input.fees,
+    desiredMarginPercentage: input.targetMarginPercentage,
+  });
+  const maxDiscountPercentage = Math.max(0, (1 - healthyPriceCents / input.priceCents) * 100);
+  return { healthyPriceCents, maxDiscountPercentage };
+}
+
+/** Cenário de um preço: por unidade e no mês, com o volume informado. */
+export function calculatePriceScenario(input: {
+  priceCents: number;
+  unitCostCents: number;
+  fees?: ChannelFees | undefined;
+  monthlySales: number;
+  fixedCostsCents?: number | undefined;
+}) {
+  const units = nonNegative(input.monthlySales, "A quantidade vendida por mês");
+  const fixedCostsCents = nonNegative(input.fixedCostsCents ?? 0, "O custo fixo total");
+  const fixedCostPerUnitCents = units > 0 ? fixedCostsCents / units : 0;
+  const unit = calculateUnitProfit({
+    priceCents: input.priceCents,
+    unitCostCents: input.unitCostCents,
+    fees: input.fees,
+    fixedCostPerUnitCents,
+  });
+  const monthlyContributionCents = unit.contributionCents * units;
+  return {
+    priceCents: input.priceCents,
+    marginPercentage:
+      input.priceCents > 0 ? (unit.contributionCents / input.priceCents) * 100 : null,
+    contributionCents: unit.contributionCents,
+    fixedCostPerUnitCents,
+    unitProfitCents: unit.profitCents,
+    monthlyRevenueCents: input.priceCents * units,
+    monthlyContributionCents,
+    monthlyProfitCents: monthlyContributionCents - fixedCostsCents,
+  };
+}
+
+/** Comparação "E se eu vender por..." — mesmo volume nos dois cenários. */
+export function comparePriceScenarios(input: {
+  currentPriceCents: number;
+  newPriceCents: number;
+  unitCostCents: number;
+  fees?: ChannelFees | undefined;
+  monthlySales: number;
+  fixedCostsCents?: number | undefined;
+}) {
+  const common = {
+    unitCostCents: input.unitCostCents,
+    fees: input.fees,
+    monthlySales: input.monthlySales,
+    fixedCostsCents: input.fixedCostsCents,
+  };
+  const current = calculatePriceScenario({ priceCents: input.currentPriceCents, ...common });
+  const next = calculatePriceScenario({ priceCents: input.newPriceCents, ...common });
+  return {
+    current,
+    next,
+    unitImpactCents: next.contributionCents - current.contributionCents,
+    monthlyImpactCents: next.monthlyContributionCents - current.monthlyContributionCents,
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/* Meta: quanto preciso vender?                                        */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Plano para atingir uma meta de lucro mensal:
+ * faturamento = (custos fixos + lucro desejado) / MC% média.
+ */
+export function calculateGoalPlan(input: {
+  targetProfitCents: number;
+  fixedCostsCents: number;
+  contributionMarginPercentage: number;
+  averageTicketCents?: number | undefined;
+  expectedMonthlySales?: number | undefined;
+  daysPerMonth?: number | undefined;
+}) {
+  nonNegative(input.targetProfitCents, "A meta de lucro");
+  nonNegative(input.fixedCostsCents, "O custo fixo total");
+  const margin = input.contributionMarginPercentage;
+  finite(margin, "A margem de contribuição média");
+  if (margin <= 0) {
+    throw new PricingError(
+      "Com margem de contribuição média zero ou negativa não é possível atingir a meta: cada venda aumenta o prejuízo.",
+    );
+  }
+  const days = input.daysPerMonth ?? 30;
+  if (days <= 0) throw new PricingError("Informe quantos dias por mês você vende.");
+  const requiredRevenueCents =
+    (input.fixedCostsCents + input.targetProfitCents) / (margin / 100);
+  const breakEvenRevenueCents = calculateBreakEvenRevenue(input.fixedCostsCents, margin);
+  const ticket = nonNegative(input.averageTicketCents ?? 0, "O ticket médio");
+  const requiredSales = ticket > 0 ? requiredRevenueCents / ticket : null;
+  const expectedUnits = nonNegative(input.expectedMonthlySales ?? 0, "A quantidade vendida por mês");
+  return {
+    requiredRevenueCents,
+    breakEvenRevenueCents,
+    requiredSales,
+    requiredSalesPerDay: requiredSales === null ? null : requiredSales / days,
+    requiredTicketCents: expectedUnits > 0 ? requiredRevenueCents / expectedUnits : null,
+  };
+}
