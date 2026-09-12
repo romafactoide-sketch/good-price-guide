@@ -10,3 +10,12 @@
 - [x] Ferramentas de decisão: página "Resultado da precificação", simuladores "E se?", desconto e meta, ponto de equilíbrio visual (53 testes no motor)
 - [x] Recorrência: score de saúde do negócio, classificação de produtos (saudável/atenção/crítico), página "Saúde dos produtos", alertas persistidos com filtros, planos Free/Pro/Negócio, limites centralizados em `src/lib/plans.ts`, paywall contextual e página de planos (67 testes)
 - [ ] Integrar cobrança real (Stripe/Paddle) na troca de plano — hoje a troca é apenas registro interno
+
+## Revisão pré-lançamento (em andamento)
+- [x] SEO exato da landing (title, description, Open Graph e Twitter)
+- [x] Módulo central de eventos (`src/lib/analytics.ts`) e instrumentação de cadastro, onboarding, produto, precificação, simuladores e paywall
+- [x] Confirmações acessíveis de exclusão (produtos, insumos, custos) substituindo `window.confirm`
+- [x] Skeletons de carregamento em produtos, insumos e custos
+- [x] Mensagens de erro amigáveis com detalhe técnico só no console
+- [ ] Verificação visual autenticada em desktop/tablet/celular e teste de isolamento com duas contas
+- [ ] Cobrança real dos planos
