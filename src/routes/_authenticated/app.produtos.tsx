@@ -322,15 +322,20 @@ function ProductsPage() {
 
     setSaving(false);
     setOpen(false);
+    track(editing ? "pricing_calculated" : "product_created", { product: payload.name });
     toast.success(editing ? "Produto atualizado." : "Produto cadastrado.");
     await load();
   }
 
   async function remove(product: Product) {
-    if (!window.confirm(`Excluir ${product.name}? A ficha técnica também será removida.`)) return;
+    const ok = await confirm({
+      title: `Excluir ${product.name}?`,
+      description: "A ficha técnica e a composição deste produto também serão removidas.",
+    });
+    if (!ok) return;
     const { error } = await supabase.from("products").delete().eq("id", product.id);
     if (error) {
-      toast.error("Não foi possível excluir o produto.");
+      toast.error("Não conseguimos excluir este produto. Tente novamente.");
       return;
     }
     toast.success("Produto excluído.");
@@ -351,9 +356,7 @@ function ProductsPage() {
       />
 
       {loading ? (
-        <div className="rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground shadow-soft">
-          Carregando produtos...
-        </div>
+        <CardsSkeleton />
       ) : ingredients.length === 0 ? (
         <EmptyState
           icon={Package}
