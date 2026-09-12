@@ -85,7 +85,7 @@ function ResultPage() {
       const referencePriceCents = currentPriceCents > 0 ? currentPriceCents : range.healthyPriceCents;
       const feesAtReference = calculateVariableFees(referencePriceCents, fees);
       return {
-        error: null,
+        ok: true as const,
         costCents,
         targetMargin,
         currentPriceCents,
@@ -112,11 +112,12 @@ function ResultPage() {
       };
     } catch (error) {
       return {
+        ok: false as const,
         error:
           error instanceof PricingError
             ? error.message
             : "Não foi possível calcular o preço deste produto.",
-      } as const;
+      };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product, channel, strategicMin, strategicMax]);
@@ -145,7 +146,7 @@ function ResultPage() {
   }
 
   const status =
-    result && !result.error && result.currentPriceCents > 0
+    result?.ok && result.currentPriceCents > 0
       ? result.currentPriceCents < result.minimumPriceCents
         ? { label: "Abaixo do mínimo", variant: "danger" as const }
         : result.currentPriceCents < result.healthyPriceCents
@@ -229,7 +230,7 @@ function ResultPage() {
             </div>
           </div>
 
-          {!result || result.error ? (
+          {!result || !result.ok ? (
             <p className="rounded-2xl border border-danger/40 bg-danger-soft px-5 py-4 text-sm text-danger">
               {result?.error ?? "Não foi possível calcular o preço deste produto."}
             </p>
