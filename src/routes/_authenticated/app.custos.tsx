@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { centsToCurrencyText, currencyTextToCents, formatBRLFromCents } from "@/lib/money";
 import { ensureWorkspace } from "@/lib/workspace";
+import { usePlan } from "@/components/app/paywall";
 
 type FixedCost = Tables<"fixed_costs">;
 const categories = { structure: "Estrutura", personnel: "Pessoal", marketing: "Marketing", administrative: "Administrativo", technology: "Tecnologia", financial: "Financeiro", other: "Outro" } as const;
@@ -30,6 +31,7 @@ export const Route = createFileRoute("/_authenticated/app/custos")({
 });
 
 function CostsPage() {
+  const { guard } = usePlan();
   const [businessId, setBusinessId] = useState("");
   const [costs, setCosts] = useState<FixedCost[]>([]);
   const [editing, setEditing] = useState<FixedCost | null>(null);
@@ -71,7 +73,7 @@ function CostsPage() {
   }
 
   return <div className="grid gap-6">
-    <PageHeader title="Custos fixos" description="Acompanhe as despesas mensais que existem mesmo sem vendas." actions={<Button variant="hero" onClick={() => showForm()}><Plus />Adicionar custo</Button>} />
+    <PageHeader title="Custos fixos" description="Acompanhe as despesas mensais que existem mesmo sem vendas." actions={<Button variant="hero" onClick={() => guard("fixed_costs", () => showForm())}><Plus />Adicionar custo</Button>} />
     <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_18rem]">
       <div className="rounded-2xl border border-border bg-card p-5 shadow-soft"><p className="text-sm text-muted-foreground">Total mensal</p><p className="mt-2 text-3xl font-extrabold tabular-nums">{formatBRLFromCents(total)}</p></div>
       <div className="flex items-center gap-3 rounded-2xl border border-border bg-card p-5 shadow-soft"><span className="grid size-10 place-items-center rounded-xl bg-primary-soft text-primary-dark"><Receipt /></span><div><strong className="block text-lg">{costs.length}</strong><span className="text-sm text-muted-foreground">custos cadastrados</span></div></div>

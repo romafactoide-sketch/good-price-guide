@@ -31,6 +31,7 @@ import type { Product } from "@/lib/catalog";
 import { formatBRLFromCents } from "@/lib/money";
 import { parseDecimal } from "@/lib/units";
 import { ensureWorkspace } from "@/lib/workspace";
+import { usePlan } from "@/components/app/paywall";
 import {
   PricingError,
   calculateBreakEvenRevenue,
@@ -109,6 +110,7 @@ type Analysis = {
 };
 
 function PricingPage() {
+  const { canUse, openPaywall } = usePlan();
   const [businessId, setBusinessId] = useState("");
   const [channels, setChannels] = useState<SalesChannel[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
