@@ -85,7 +85,7 @@ function ResultPage() {
       const referencePriceCents = currentPriceCents > 0 ? currentPriceCents : range.healthyPriceCents;
       const feesAtReference = calculateVariableFees(referencePriceCents, fees);
       return {
-        error: null as string | null,
+        error: null,
         costCents,
         targetMargin,
         currentPriceCents,
