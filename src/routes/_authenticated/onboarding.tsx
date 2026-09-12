@@ -154,8 +154,7 @@ function OnboardingPage() {
       if (complete) {
         track("onboarding_completed", { steps: 4 });
         navigate({ to: "/app", replace: true });
-      }
-      else setStep(next);
+      } else setStep(next);
     } catch (saveFailure) {
       console.error("[onboarding:save]", saveFailure);
       setError("Não foi possível salvar. Tente novamente.");
