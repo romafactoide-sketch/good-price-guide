@@ -1,7 +1,8 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { Link, createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { Bell, Menu } from "lucide-react";
 import { SidebarContent } from "@/components/app/app-sidebar";
+import { PaywallProvider } from "@/components/app/paywall";
 import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -25,6 +26,7 @@ function AppLayout() {
   const [open, setOpen] = useState(false);
 
   return (
+    <PaywallProvider>
     <div className="min-h-screen bg-background lg:grid lg:grid-cols-[17rem_minmax(0,1fr)]">
       <aside className="sticky top-0 hidden h-screen border-r border-sidebar-border lg:block">
         <SidebarContent />
@@ -46,8 +48,10 @@ function AppLayout() {
             <Logo to="/app" />
           </div>
           <div className="flex shrink-0 items-center gap-2">
-            <Button variant="ghost" size="icon" aria-label="Alertas">
-              <Bell />
+            <Button asChild variant="ghost" size="icon" aria-label="Alertas">
+              <Link to="/app/alertas">
+                <Bell />
+              </Link>
             </Button>
             <span className="grid size-9 place-items-center rounded-full bg-gradient-primary text-xs font-bold text-primary-foreground">
               PS
@@ -60,5 +64,6 @@ function AppLayout() {
         </main>
       </div>
     </div>
+    </PaywallProvider>
   );
 }
