@@ -13,6 +13,7 @@ export type PricingData = {
   fixedCostsCents: number;
   proLaboreCents: number;
   monthlyGoalCents: number;
+  criticalMarginPercentage: number;
 };
 
 /** Carrega apenas os dados do negócio do usuário autenticado. */
@@ -25,6 +26,7 @@ export function usePricingData() {
     fixedCostsCents: 0,
     proLaboreCents: 0,
     monthlyGoalCents: 0,
+    criticalMarginPercentage: 5,
   });
 
   useEffect(() => {
@@ -50,6 +52,7 @@ export function usePricingData() {
         ),
         proLaboreCents: Number(business.pro_labore_cents ?? 0),
         monthlyGoalCents: Number(business.monthly_revenue_cents ?? 0),
+        criticalMarginPercentage: Number(business.critical_margin_percentage ?? 5),
       });
     })().catch(() => {
       if (!active) return;

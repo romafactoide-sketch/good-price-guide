@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Target } from "lucide-react";
 import { ComingSoon } from "@/components/app/coming-soon";
+import { PremiumLock, usePlan } from "@/components/app/paywall";
+import { PageHeader } from "@/components/ui/page-header";
 
 export const Route = createFileRoute("/_authenticated/app/metas")({
   head: () => ({
@@ -17,6 +19,15 @@ export const Route = createFileRoute("/_authenticated/app/metas")({
 });
 
 function Page() {
+  const { canUse } = usePlan();
+  if (!canUse("goals")) {
+    return (
+      <div className="grid gap-6">
+        <PageHeader title="Metas" description="Defina o lucro que você quer alcançar no mês." />
+        <PremiumLock feature="goals" />
+      </div>
+    );
+  }
   return (
     <ComingSoon
       title="Metas"

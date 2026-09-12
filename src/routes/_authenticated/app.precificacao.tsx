@@ -31,6 +31,7 @@ import type { Product } from "@/lib/catalog";
 import { formatBRLFromCents } from "@/lib/money";
 import { parseDecimal } from "@/lib/units";
 import { ensureWorkspace } from "@/lib/workspace";
+import { usePlan } from "@/components/app/paywall";
 import {
   PricingError,
   calculateBreakEvenRevenue,
@@ -109,6 +110,7 @@ type Analysis = {
 };
 
 function PricingPage() {
+  const { canUse, openPaywall } = usePlan();
   const [businessId, setBusinessId] = useState("");
   const [channels, setChannels] = useState<SalesChannel[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -305,6 +307,15 @@ function PricingPage() {
     }
   }
 
+  /** Canais extras fazem parte da precificação por canal (plano pago). */
+  function startChannel() {
+    if (!canUse("channel_pricing") && channels.length >= 1) {
+      openPaywall("channel_pricing", "Seu plano gratuito permite 1 canal de venda.");
+      return;
+    }
+    showChannelForm();
+  }
+
   function showChannelForm(item?: SalesChannel) {
     setEditing(item ?? null);
     setChannelName(item?.name ?? "");
@@ -414,7 +425,7 @@ function PricingPage() {
         title="Precificação"
         description="Preço mínimo, preço saudável e faixa de teste de cada produto, canal por canal."
         actions={
-          <Button variant="hero" onClick={() => showChannelForm()}>
+          <Button variant="hero" onClick={startChannel}>
             <Plus />
             Novo canal
           </Button>
@@ -427,7 +438,7 @@ function PricingPage() {
           title="Você ainda não cadastrou nenhum canal de venda"
           description="Um canal reúne as taxas que incidem sobre a venda: impostos, cartão, marketplace, comissão e entrega."
           action={
-            <Button variant="hero" onClick={() => showChannelForm()}>
+            <Button variant="hero" onClick={startChannel}>
               <Plus />
               Criar canal de venda
             </Button>

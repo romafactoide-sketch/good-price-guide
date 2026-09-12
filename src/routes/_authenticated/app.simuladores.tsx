@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import { BreakEvenMeter } from "@/components/app/break-even-meter";
+import { PremiumLock, usePlan } from "@/components/app/paywall";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CurrencyInput } from "@/components/ui/currency-input";
@@ -59,6 +60,22 @@ const messageOf = (error: unknown, fallback: string) =>
   error instanceof PricingError ? error.message : fallback;
 
 function SimulatorsPage() {
+  const { canUse } = usePlan();
+  if (!canUse("simulators")) {
+    return (
+      <div className="grid gap-6">
+        <PageHeader
+          title="Simuladores"
+          description="Teste preços, descontos e metas antes de mudar a sua tabela."
+        />
+        <PremiumLock feature="simulators" />
+      </div>
+    );
+  }
+  return <SimulatorsContent />;
+}
+
+function SimulatorsContent() {
   const { loading, products, channels, fixedCostsCents, proLaboreCents, monthlyGoalCents } =
     usePricingData();
 

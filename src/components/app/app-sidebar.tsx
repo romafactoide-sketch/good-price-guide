@@ -4,6 +4,7 @@ import {
   Boxes,
   Calculator,
   FileBarChart,
+  HeartPulse,
   Home,
   Package,
   Receipt,
@@ -17,11 +18,13 @@ import { Logo } from "@/components/brand/logo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { UserSummary } from "@/components/app/user-summary";
+import { usePlan } from "@/components/app/paywall";
 
 export const navItems = [
   { label: "Início", to: "/app", icon: Home },
   { label: "Produtos", to: "/app/produtos", icon: Package },
   { label: "Precificação", to: "/app/precificacao", icon: Calculator },
+  { label: "Saúde dos produtos", to: "/app/saude", icon: HeartPulse },
   { label: "Serviços", to: "/app/servicos", icon: Wrench },
   { label: "Insumos", to: "/app/insumos", icon: Boxes },
   { label: "Custos", to: "/app/custos", icon: Receipt },
@@ -33,6 +36,7 @@ export const navItems = [
 ] as const;
 
 export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
+  const { planName, plan } = usePlan();
   return (
     <div className="flex h-full flex-col bg-sidebar">
       <div className="px-5 py-5">
@@ -66,16 +70,16 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
             <span className="min-w-0">
               <span className="block text-xs text-primary-dark/80">Plano atual</span>
-              <span className="block truncate text-sm font-bold text-primary-dark">Pro</span>
+              <span className="block truncate text-sm font-bold text-primary-dark">{planName}</span>
             </span>
-            <Badge variant="success" className="shrink-0">
-              Ativo
+            <Badge variant={plan === "free" ? "neutral" : "success"} className="shrink-0">
+              {plan === "free" ? "Gratuito" : "Ativo"}
             </Badge>
           </div>
           <Button asChild variant="soft" size="sm" className="mt-3 w-full">
-            <Link to="/app/configuracoes">
+            <Link to="/app/planos" onClick={onNavigate}>
               <Sparkles />
-              Gerenciar plano
+              {plan === "free" ? "Conhecer o Pro" : "Gerenciar plano"}
             </Link>
           </Button>
         </div>
