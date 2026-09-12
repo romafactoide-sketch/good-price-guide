@@ -47,6 +47,8 @@ import {
   type PurchaseUnit,
 } from "@/lib/units";
 import { ensureWorkspace } from "@/lib/workspace";
+import { usePlan } from "@/components/app/paywall";
+import { canCreateProduct } from "@/lib/plans";
 
 export const Route = createFileRoute("/_authenticated/app/produtos")({
   head: () => ({
@@ -81,6 +83,7 @@ const emptyComposition = (): CompositionLine => ({
 });
 
 function ProductsPage() {
+  const { plan, openPaywall } = usePlan();
   const [businessId, setBusinessId] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
@@ -126,7 +129,7 @@ function ProductsPage() {
 
   useEffect(() => {
     if (!novo || loading) return;
-    showForm();
+    startCreate();
     navigate({ search: {}, replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [novo, loading]);
@@ -153,6 +156,16 @@ function ProductsPage() {
 
   const wasteNumber = Math.min(parseDecimal(waste), 99.99);
   const totals = productTotals(ingredientCostCents, extrasCostCents, wasteNumber);
+
+  /** Novo produto respeitando o limite do plano. */
+  function startCreate() {
+    const check = canCreateProduct(plan, products.length);
+    if (!check.allowed) {
+      openPaywall("unlimited_products", check.message ?? undefined);
+      return;
+    }
+    showForm();
+  }
 
   async function showForm(product?: Product) {
     setEditing(product ?? null);
@@ -330,7 +343,7 @@ function ProductsPage() {
         title="Produtos"
         description="Ficha técnica, composição e perdas de cada produto ou serviço."
         actions={
-          <Button variant="hero" onClick={() => showForm()}>
+          <Button variant="hero" onClick={startCreate}>
             <Plus />
             Novo produto
           </Button>
@@ -358,7 +371,7 @@ function ProductsPage() {
           title="Nenhum produto cadastrado ainda."
           description="Crie seu primeiro produto e monte a ficha técnica com os insumos que você já cadastrou."
           action={
-            <Button variant="hero" onClick={() => showForm()}>
+            <Button variant="hero" onClick={startCreate}>
               <Plus />
               Novo produto
             </Button>

@@ -44,6 +44,8 @@ import {
   type PurchaseUnit,
 } from "@/lib/units";
 import { ensureWorkspace } from "@/lib/workspace";
+import { usePlan } from "@/components/app/paywall";
+import { canCreateIngredient } from "@/lib/plans";
 
 export const Route = createFileRoute("/_authenticated/app/insumos")({
   head: () => ({
@@ -135,6 +137,16 @@ function IngredientsPage() {
       return matchesTerm && matchesCategory && matchesUnit;
     });
   }, [ingredients, search, categoryFilter, unitFilter]);
+
+  /** Novo insumo respeitando o limite do plano. */
+  function startCreate() {
+    const check = canCreateIngredient(plan, ingredients.length);
+    if (!check.allowed) {
+      openPaywall("unlimited_ingredients", check.message ?? undefined);
+      return;
+    }
+    showForm();
+  }
 
   function showForm(item?: Ingredient) {
     setEditing(item ?? null);
@@ -246,7 +258,7 @@ function IngredientsPage() {
         title="Insumos"
         description="Ingredientes, embalagens e materiais que compõem o que você vende."
         actions={
-          <Button variant="hero" onClick={() => showForm()}>
+          <Button variant="hero" onClick={startCreate}>
             <Plus />
             Novo insumo
           </Button>
@@ -304,7 +316,7 @@ function IngredientsPage() {
           title="Você ainda não cadastrou nenhum insumo."
           description="Cadastre ingredientes, materiais ou mercadorias para calcular seus produtos automaticamente."
           action={
-            <Button variant="hero" onClick={() => showForm()}>
+            <Button variant="hero" onClick={startCreate}>
               <Plus />
               Novo insumo
             </Button>

@@ -21,6 +21,8 @@ export type FeatureId =
   | "history"
   | "reports"
   | "channel_pricing"
+  | "unlimited_products"
+  | "unlimited_ingredients"
   | "multi_business"
   | "extra_users"
   | "units"
@@ -62,6 +64,8 @@ const proFeatures: FeatureId[] = [
   "history",
   "reports",
   "channel_pricing",
+  "unlimited_products",
+  "unlimited_ingredients",
 ];
 
 const businessFeatures: FeatureId[] = [
@@ -235,6 +239,14 @@ export const featureBenefits: Record<FeatureId, { title: string; benefit: string
   channel_pricing: {
     title: "Precificação por canal",
     benefit: "Preço certo para balcão, delivery e marketplace, cada um com suas taxas.",
+  },
+  unlimited_products: {
+    title: "Produtos ilimitados",
+    benefit: "Cadastre quantos produtos quiser e precifique todo o seu catálogo.",
+  },
+  unlimited_ingredients: {
+    title: "Insumos ilimitados",
+    benefit: "Cadastre todos os seus insumos e tenha o custo real de cada receita.",
   },
   multi_business: { title: "Mais de um negócio", benefit: "Gerencie várias operações na mesma conta." },
   extra_users: { title: "Usuários adicionais", benefit: "Traga sua equipe para dentro." },
