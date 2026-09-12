@@ -14,11 +14,62 @@ export type Database = {
   }
   public: {
     Tables: {
+      alerts: {
+        Row: {
+          business_id: string
+          created_at: string
+          dedupe_day: string
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          message: string
+          read: boolean
+          severity: string
+          title: string
+          type: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          dedupe_day?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          message?: string
+          read?: boolean
+          severity?: string
+          title: string
+          type: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          dedupe_day?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          message?: string
+          read?: boolean
+          severity?: string
+          title?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alerts_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       businesses: {
         Row: {
           average_ticket_cents: number | null
           business_type: string | null
           created_at: string
+          critical_margin_percentage: number
           id: string
           monthly_revenue_cents: number | null
           monthly_sales: number | null
@@ -33,6 +84,7 @@ export type Database = {
           average_ticket_cents?: number | null
           business_type?: string | null
           created_at?: string
+          critical_margin_percentage?: number
           id?: string
           monthly_revenue_cents?: number | null
           monthly_sales?: number | null
@@ -47,6 +99,7 @@ export type Database = {
           average_ticket_cents?: number | null
           business_type?: string | null
           created_at?: string
+          critical_margin_percentage?: number
           id?: string
           monthly_revenue_cents?: number | null
           monthly_sales?: number | null
@@ -437,6 +490,56 @@ export type Database = {
           },
         ]
       }
+      subscriptions: {
+        Row: {
+          billing_cycle: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          plan: string
+          provider: string
+          provider_subscription_id: string | null
+          started_at: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          billing_cycle?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          plan?: string
+          provider?: string
+          provider_subscription_id?: string | null
+          started_at?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          billing_cycle?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          plan?: string
+          provider?: string
+          provider_subscription_id?: string | null
+          started_at?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -448,6 +551,7 @@ export type Database = {
           average_ticket_cents: number | null
           business_type: string | null
           created_at: string
+          critical_margin_percentage: number
           id: string
           monthly_revenue_cents: number | null
           monthly_sales: number | null
@@ -480,6 +584,7 @@ export type Database = {
           average_ticket_cents: number | null
           business_type: string | null
           created_at: string
+          critical_margin_percentage: number
           id: string
           monthly_revenue_cents: number | null
           monthly_sales: number | null
