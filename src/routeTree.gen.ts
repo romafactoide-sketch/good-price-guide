@@ -28,6 +28,7 @@ import { Route as AuthenticatedAppProdutosRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAppRelatoriosRouteImport } from './routes/_authenticated/app.relatorios'
 import { Route as AuthenticatedAppServicosRouteImport } from './routes/_authenticated/app.servicos'
 import { Route as AuthenticatedAppSimuladoresRouteImport } from './routes/_authenticated/app.simuladores'
+import { Route as AuthenticatedAppResultadoProductIdRouteImport } from './routes/_authenticated/app.resultado.$productId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -129,6 +130,12 @@ const AuthenticatedAppSimuladoresRoute =
     path: '/simuladores',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppResultadoProductIdRoute =
+  AuthenticatedAppResultadoProductIdRouteImport.update({
+    id: '/resultado/$productId',
+    path: '/resultado/$productId',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -149,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/app/simuladores': typeof AuthenticatedAppSimuladoresRoute
   '/app/': typeof AuthenticatedAppIndexRoute
+  '/app/resultado/$productId': typeof AuthenticatedAppResultadoProductIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -168,6 +176,7 @@ export interface FileRoutesByTo {
   '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/app/simuladores': typeof AuthenticatedAppSimuladoresRoute
   '/app': typeof AuthenticatedAppIndexRoute
+  '/app/resultado/$productId': typeof AuthenticatedAppResultadoProductIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -190,6 +199,7 @@ export interface FileRoutesById {
   '/_authenticated/app/servicos': typeof AuthenticatedAppServicosRoute
   '/_authenticated/app/simuladores': typeof AuthenticatedAppSimuladoresRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
+  '/_authenticated/app/resultado/$productId': typeof AuthenticatedAppResultadoProductIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -212,6 +222,7 @@ export interface FileRouteTypes {
     | '/app/servicos'
     | '/app/simuladores'
     | '/app/'
+    | '/app/resultado/$productId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -231,6 +242,7 @@ export interface FileRouteTypes {
     | '/app/servicos'
     | '/app/simuladores'
     | '/app'
+    | '/app/resultado/$productId'
   id:
     | '__root__'
     | '/'
@@ -252,6 +264,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/servicos'
     | '/_authenticated/app/simuladores'
     | '/_authenticated/app/'
+    | '/_authenticated/app/resultado/$productId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -398,6 +411,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppSimuladoresRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/resultado/$productId': {
+      id: '/_authenticated/app/resultado/$productId'
+      path: '/resultado/$productId'
+      fullPath: '/app/resultado/$productId'
+      preLoaderRoute: typeof AuthenticatedAppResultadoProductIdRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
   }
 }
 
@@ -413,6 +433,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppServicosRoute: typeof AuthenticatedAppServicosRoute
   AuthenticatedAppSimuladoresRoute: typeof AuthenticatedAppSimuladoresRoute
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
+  AuthenticatedAppResultadoProductIdRoute: typeof AuthenticatedAppResultadoProductIdRoute
 }
 
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
@@ -427,6 +448,8 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppServicosRoute: AuthenticatedAppServicosRoute,
   AuthenticatedAppSimuladoresRoute: AuthenticatedAppSimuladoresRoute,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
+  AuthenticatedAppResultadoProductIdRoute:
+    AuthenticatedAppResultadoProductIdRoute,
 }
 
 const AuthenticatedAppRouteWithChildren =
