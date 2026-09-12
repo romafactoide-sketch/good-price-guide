@@ -46,6 +46,8 @@ import {
 import { ensureWorkspace } from "@/lib/workspace";
 import { usePlan } from "@/components/app/paywall";
 import { canCreateIngredient } from "@/lib/plans";
+import { TableSkeleton } from "@/components/app/loading-skeletons";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 
 export const Route = createFileRoute("/_authenticated/app/insumos")({
   head: () => ({
@@ -72,6 +74,7 @@ type Usage = Record<string, number>;
 
 function IngredientsPage() {
   const { plan, openPaywall } = usePlan();
+  const { confirm, confirmDialog } = useConfirm();
   const [businessId, setBusinessId] = useState("");
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [usage, setUsage] = useState<Usage>({});
@@ -221,7 +224,7 @@ function IngredientsPage() {
 
     if (result.error) {
       setSaving(false);
-      toast.error("Não foi possível salvar o insumo.");
+      toast.error("Não conseguimos salvar este insumo. Tente novamente.");
       return;
     }
 
@@ -239,13 +242,16 @@ function IngredientsPage() {
 
   async function remove(item: Ingredient) {
     const affected = await productsUsingIngredient(item.id);
-    const warning = affected.length
-      ? `Excluir ${item.name}? Ele é usado em ${affected.length} produto(s) e sairá dessas fichas técnicas.`
-      : `Excluir ${item.name}?`;
-    if (!window.confirm(warning)) return;
+    const ok = await confirm({
+      title: `Excluir ${item.name}?`,
+      description: affected.length
+        ? `Ele é usado em ${affected.length} produto(s) e sairá dessas fichas técnicas.`
+        : "Este insumo deixará de estar disponível para novas fichas técnicas.",
+    });
+    if (!ok) return;
     const { error } = await supabase.from("ingredients").delete().eq("id", item.id);
     if (error) {
-      toast.error("Não foi possível excluir o insumo.");
+      toast.error("Não conseguimos excluir este insumo. Tente novamente.");
       return;
     }
     for (const product of affected) await recalculateProduct(product.id);
@@ -255,6 +261,7 @@ function IngredientsPage() {
 
   return (
     <div className="grid gap-6">
+      {confirmDialog}
       <PageHeader
         title="Insumos"
         description="Ingredientes, embalagens e materiais que compõem o que você vende."
@@ -308,9 +315,7 @@ function IngredientsPage() {
       ) : null}
 
       {loading ? (
-        <div className="rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground shadow-soft">
-          Carregando insumos...
-        </div>
+        <TableSkeleton rows={5} />
       ) : ingredients.length === 0 ? (
         <EmptyState
           icon={Boxes}

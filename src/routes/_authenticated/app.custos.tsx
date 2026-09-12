@@ -27,6 +27,8 @@ import type { Tables } from "@/integrations/supabase/types";
 import { centsToCurrencyText, currencyTextToCents, formatBRLFromCents } from "@/lib/money";
 import { ensureWorkspace } from "@/lib/workspace";
 import { usePlan } from "@/components/app/paywall";
+import { TableSkeleton } from "@/components/app/loading-skeletons";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 
 type FixedCost = Tables<"fixed_costs">;
 const categories = {
@@ -58,6 +60,8 @@ export const Route = createFileRoute("/_authenticated/app/custos")({
 
 function CostsPage() {
   const { guard } = usePlan();
+  const { confirm, confirmDialog } = useConfirm();
+  const [loading, setLoading] = useState(true);
   const [businessId, setBusinessId] = useState("");
   const [costs, setCosts] = useState<FixedCost[]>([]);
   const [editing, setEditing] = useState<FixedCost | null>(null);
@@ -77,10 +81,12 @@ function CostsPage() {
       .eq("business_id", business.id)
       .order("created_at");
     if (error) {
-      toast.error("Não foi possível carregar os custos.");
+      setLoading(false);
+      toast.error("Não foi possível carregar os custos. Tente novamente.");
       return;
     }
     setCosts(data);
+    setLoading(false);
   }
   useEffect(() => {
     load();
@@ -111,7 +117,7 @@ function CostsPage() {
       : await supabase.from("fixed_costs").insert(payload);
     setSaving(false);
     if (result.error) {
-      toast.error("Não foi possível salvar o custo.");
+      toast.error("Não conseguimos salvar este custo. Tente novamente.");
       return;
     }
     toast.success(editing ? "Custo atualizado." : "Custo adicionado.");
@@ -120,10 +126,14 @@ function CostsPage() {
   }
 
   async function remove(cost: FixedCost) {
-    if (!window.confirm(`Excluir ${cost.name}?`)) return;
+    const ok = await confirm({
+      title: `Excluir ${cost.name}?`,
+      description: "Este custo fixo deixará de entrar no cálculo do ponto de equilíbrio.",
+    });
+    if (!ok) return;
     const { error } = await supabase.from("fixed_costs").delete().eq("id", cost.id);
     if (error) {
-      toast.error("Não foi possível excluir o custo.");
+      toast.error("Não conseguimos excluir este custo. Tente novamente.");
       return;
     }
     toast.success("Custo excluído.");
@@ -157,63 +167,68 @@ function CostsPage() {
           </div>
         </div>
       </div>
-      <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
-        {costs.length ? (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[36rem] text-sm">
-              <thead>
-                <tr className="border-b border-border text-left text-xs uppercase text-muted-foreground">
-                  <th className="px-5 py-3">Custo</th>
-                  <th className="px-5 py-3">Categoria</th>
-                  <th className="px-5 py-3 text-right">Valor</th>
-                  <th className="px-5 py-3 text-right">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {costs.map((cost) => (
-                  <tr key={cost.id} className="border-b border-border/70 last:border-0">
-                    <td className="px-5 py-4 font-semibold">{cost.name}</td>
-                    <td className="px-5 py-4 text-muted-foreground">
-                      {categories[cost.category as keyof typeof categories] ?? "Outro"}
-                    </td>
-                    <td className="px-5 py-4 text-right font-semibold tabular-nums">
-                      {formatBRLFromCents(cost.amount_cents)}
-                    </td>
-                    <td className="px-5 py-4">
-                      <div className="flex justify-end gap-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          aria-label={`Editar ${cost.name}`}
-                          onClick={() => showForm(cost)}
-                        >
-                          <Pencil />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          aria-label={`Excluir ${cost.name}`}
-                          onClick={() => remove(cost)}
-                        >
-                          <Trash2 />
-                        </Button>
-                      </div>
-                    </td>
+      {loading ? (
+        <TableSkeleton />
+      ) : (
+        <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
+          {costs.length ? (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[36rem] text-sm">
+                <thead>
+                  <tr className="border-b border-border text-left text-xs uppercase text-muted-foreground">
+                    <th className="px-5 py-3">Custo</th>
+                    <th className="px-5 py-3">Categoria</th>
+                    <th className="px-5 py-3 text-right">Valor</th>
+                    <th className="px-5 py-3 text-right">Ações</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="px-5 py-14 text-center">
-            <Receipt className="mx-auto size-8 text-muted-foreground" />
-            <h2 className="mt-4 font-bold">Nenhum custo cadastrado</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Adicione aluguel, energia, equipe e outras despesas mensais.
-            </p>
-          </div>
-        )}
-      </div>
+                </thead>
+                <tbody>
+                  {costs.map((cost) => (
+                    <tr key={cost.id} className="border-b border-border/70 last:border-0">
+                      <td className="px-5 py-4 font-semibold">{cost.name}</td>
+                      <td className="px-5 py-4 text-muted-foreground">
+                        {categories[cost.category as keyof typeof categories] ?? "Outro"}
+                      </td>
+                      <td className="px-5 py-4 text-right font-semibold tabular-nums">
+                        {formatBRLFromCents(cost.amount_cents)}
+                      </td>
+                      <td className="px-5 py-4">
+                        <div className="flex justify-end gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            aria-label={`Editar ${cost.name}`}
+                            onClick={() => showForm(cost)}
+                          >
+                            <Pencil />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            aria-label={`Excluir ${cost.name}`}
+                            onClick={() => remove(cost)}
+                          >
+                            <Trash2 />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="px-5 py-14 text-center">
+              <Receipt className="mx-auto size-8 text-muted-foreground" />
+              <h2 className="mt-4 font-bold">Nenhum custo cadastrado</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Adicione aluguel, energia, equipe e outras despesas mensais.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+      {confirmDialog}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>

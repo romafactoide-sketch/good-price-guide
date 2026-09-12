@@ -50,10 +50,7 @@ export function DataTable<T>({
           </thead>
           <tbody>
             {rows.map((row, index) => (
-              <tr
-                key={index}
-                className="border-b border-border/70 last:border-0 hover:bg-muted/60"
-              >
+              <tr key={index} className="border-b border-border/70 last:border-0 hover:bg-muted/60">
                 {columns.map((column) => (
                   <td
                     key={column.key}

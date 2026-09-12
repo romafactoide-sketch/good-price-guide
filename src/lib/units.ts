@@ -56,11 +56,8 @@ export const unitCostCents = (
 };
 
 /** Custo de uma quantidade utilizada, em centavos. */
-export const usageCostCents = (
-  unitCost: number,
-  quantityUsed: number,
-  unitUsed: PurchaseUnit,
-) => unitCost * toBaseQuantity(quantityUsed, unitUsed);
+export const usageCostCents = (unitCost: number, quantityUsed: number, unitUsed: PurchaseUnit) =>
+  unitCost * toBaseQuantity(quantityUsed, unitUsed);
 
 /** Aceita "1.234,5678" ou "1234.5678" e devolve número. */
 export const parseDecimal = (value: string) => {

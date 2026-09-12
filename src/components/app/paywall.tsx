@@ -22,6 +22,7 @@ import {
   type FeatureId,
   type PlanId,
 } from "@/lib/plans";
+import { track } from "@/lib/analytics";
 import { effectivePlan, subscriptionQuery } from "@/lib/subscription";
 
 type PaywallRequest = { feature: FeatureId; reason?: string };
@@ -57,10 +58,14 @@ export function PaywallProvider({ children }: { children: ReactNode }) {
       loading: isLoading,
       limits: getPlanLimits(plan),
       canUse: (feature) => canUseFeature(plan, feature),
-      openPaywall: (feature, reason) => setRequest(reason ? { feature, reason } : { feature }),
+      openPaywall: (feature, reason) => {
+        track("paywall_viewed", { feature, plan });
+        setRequest(reason ? { feature, reason } : { feature });
+      },
       guard: (feature, action, reason) => {
-        if (canUseFeature(plan, feature)) action();
-        else setRequest(reason ? { feature, reason } : { feature });
+        if (canUseFeature(plan, feature)) return action();
+        track("paywall_viewed", { feature, plan });
+        setRequest(reason ? { feature, reason } : { feature });
       },
     }),
     [plan, isLoading],
@@ -108,7 +113,14 @@ export function PaywallProvider({ children }: { children: ReactNode }) {
             <Button variant="ghost" onClick={() => setRequest(null)}>
               Agora não
             </Button>
-            <Button asChild variant="hero" onClick={() => setRequest(null)}>
+            <Button
+              asChild
+              variant="hero"
+              onClick={() => {
+                track("upgrade_clicked", { plan: target.id, from: plan });
+                setRequest(null);
+              }}
+            >
               <Link to="/app/planos">CONHECER O {target.name.toUpperCase()}</Link>
             </Button>
           </DialogFooter>

@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/select";
 import { StatCard } from "@/components/ui/stat-card";
 import { supabase } from "@/integrations/supabase/client";
+import { track } from "@/lib/analytics";
 import type { Product } from "@/lib/catalog";
 import { formatBRLFromCents } from "@/lib/money";
 import { parseDecimal } from "@/lib/units";
@@ -404,6 +405,7 @@ function PricingPage() {
     setSavingPrices(true);
     try {
       await saveProductChannelPrices(rows);
+      track("pricing_calculated", { products: rows.length });
       toast.success("Preços do canal salvos.");
     } catch {
       toast.error("Não foi possível salvar os preços deste canal.");

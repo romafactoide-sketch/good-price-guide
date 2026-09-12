@@ -3,7 +3,7 @@
  * ou conta demo. NUNCA devem aparecer em contas reais: só consuma este módulo
  * quando `isDemoMode()` for verdadeiro (flag explícita VITE_DEMO_MODE=true).
  */
-export const isDemoMode = () => import.meta.env['VITE_DEMO_MODE'] === "true";
+export const isDemoMode = () => import.meta.env["VITE_DEMO_MODE"] === "true";
 
 export type HealthStatus = "saudavel" | "atencao" | "critico";
 

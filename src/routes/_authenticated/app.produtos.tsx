@@ -49,6 +49,9 @@ import {
 import { ensureWorkspace } from "@/lib/workspace";
 import { usePlan } from "@/components/app/paywall";
 import { canCreateProduct } from "@/lib/plans";
+import { CardsSkeleton } from "@/components/app/loading-skeletons";
+import { useConfirm } from "@/components/ui/confirm-dialog";
+import { track } from "@/lib/analytics";
 
 export const Route = createFileRoute("/_authenticated/app/produtos")({
   head: () => ({
@@ -84,6 +87,7 @@ const emptyComposition = (): CompositionLine => ({
 
 function ProductsPage() {
   const { plan, openPaywall } = usePlan();
+  const { confirm, confirmDialog } = useConfirm();
   const [businessId, setBusinessId] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
@@ -322,15 +326,20 @@ function ProductsPage() {
 
     setSaving(false);
     setOpen(false);
+    track(editing ? "pricing_calculated" : "product_created", { product: payload.name });
     toast.success(editing ? "Produto atualizado." : "Produto cadastrado.");
     await load();
   }
 
   async function remove(product: Product) {
-    if (!window.confirm(`Excluir ${product.name}? A ficha técnica também será removida.`)) return;
+    const ok = await confirm({
+      title: `Excluir ${product.name}?`,
+      description: "A ficha técnica e a composição deste produto também serão removidas.",
+    });
+    if (!ok) return;
     const { error } = await supabase.from("products").delete().eq("id", product.id);
     if (error) {
-      toast.error("Não foi possível excluir o produto.");
+      toast.error("Não conseguimos excluir este produto. Tente novamente.");
       return;
     }
     toast.success("Produto excluído.");
@@ -339,6 +348,7 @@ function ProductsPage() {
 
   return (
     <div className="grid gap-6">
+      {confirmDialog}
       <PageHeader
         title="Produtos"
         description="Ficha técnica, composição e perdas de cada produto ou serviço."
@@ -351,9 +361,7 @@ function ProductsPage() {
       />
 
       {loading ? (
-        <div className="rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground shadow-soft">
-          Carregando produtos...
-        </div>
+        <CardsSkeleton />
       ) : ingredients.length === 0 ? (
         <EmptyState
           icon={Package}

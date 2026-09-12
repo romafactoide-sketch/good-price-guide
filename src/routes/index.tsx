@@ -14,20 +14,34 @@ import { ensureWorkspace } from "@/lib/workspace";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "PreçoSadio — Descubra quanto cobrar para dar lucro" },
+      { title: "PreçoSadio | Calculadora de preço de venda, margem e markup" },
       {
         name: "description",
         content:
-          "Cadastre seus custos e descubra preço mínimo, preço saudável, margem, markup e ponto de equilíbrio do seu negócio.",
+          "Calcule quanto cobrar pelos seus produtos e serviços. Descubra preço saudável, margem, markup, custos e ponto de equilíbrio.",
       },
-      { property: "og:title", content: "PreçoSadio — Descubra quanto cobrar para dar lucro" },
+      {
+        property: "og:title",
+        content: "PreçoSadio | Calculadora de preço de venda, margem e markup",
+      },
       {
         property: "og:description",
         content:
-          "Precificação simples para pequenos negócios: margem, markup e ponto de equilíbrio sem planilha.",
+          "Calcule quanto cobrar pelos seus produtos e serviços. Descubra preço saudável, margem, markup, custos e ponto de equilíbrio.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PreçoSadio" },
+      { property: "og:locale", content: "pt_BR" },
       { name: "twitter:card", content: "summary_large_image" },
+      {
+        name: "twitter:title",
+        content: "PreçoSadio | Calculadora de preço de venda, margem e markup",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "Calcule quanto cobrar pelos seus produtos e serviços. Descubra preço saudável, margem, markup, custos e ponto de equilíbrio.",
+      },
     ],
   }),
   component: LandingPage,

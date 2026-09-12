@@ -6,9 +6,15 @@ export const Route = createFileRoute("/_authenticated/app/servicos")({
   head: () => ({
     meta: [
       { title: "Serviços — PreçoSadio" },
-      { name: "description", content: "Precifique serviços considerando seu tempo e suas despesas." },
+      {
+        name: "description",
+        content: "Precifique serviços considerando seu tempo e suas despesas.",
+      },
       { property: "og:title", content: "Serviços — PreçoSadio" },
-      { property: "og:description", content: "Precifique serviços considerando seu tempo e suas despesas." },
+      {
+        property: "og:description",
+        content: "Precifique serviços considerando seu tempo e suas despesas.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

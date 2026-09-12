@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { StatCard } from "@/components/ui/stat-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { track } from "@/lib/analytics";
 import { usePricingData } from "@/hooks/use-pricing-data";
 import { currencyTextToCents, formatBRLFromCents } from "@/lib/money";
 import { parseDecimal } from "@/lib/units";
@@ -287,7 +288,10 @@ function SimulatorsContent() {
             </p>
           ) : null}
 
-          <Tabs defaultValue="e-se">
+          <Tabs
+            defaultValue="e-se"
+            onValueChange={(tab) => track("simulation_used", { simulator: tab })}
+          >
             <TabsList className="flex-wrap">
               <TabsTrigger value="e-se">E se eu vender por...</TabsTrigger>
               <TabsTrigger value="desconto">Posso dar desconto?</TabsTrigger>

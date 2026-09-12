@@ -1,11 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
-import {
-  applyWaste,
-  isPurchaseUnit,
-  usageCostCents,
-  type PurchaseUnit,
-} from "@/lib/units";
+import { applyWaste, isPurchaseUnit, usageCostCents, type PurchaseUnit } from "@/lib/units";
 
 export type Ingredient = Tables<"ingredients">;
 export type Product = Tables<"products">;
