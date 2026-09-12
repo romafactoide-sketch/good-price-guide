@@ -46,6 +46,8 @@ import {
 import { ensureWorkspace } from "@/lib/workspace";
 import { usePlan } from "@/components/app/paywall";
 import { canCreateIngredient } from "@/lib/plans";
+import { TableSkeleton } from "@/components/app/loading-skeletons";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 
 export const Route = createFileRoute("/_authenticated/app/insumos")({
   head: () => ({
@@ -72,6 +74,7 @@ type Usage = Record<string, number>;
 
 function IngredientsPage() {
   const { plan, openPaywall } = usePlan();
+  const { confirm, confirmDialog } = useConfirm();
   const [businessId, setBusinessId] = useState("");
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [usage, setUsage] = useState<Usage>({});
@@ -258,6 +261,7 @@ function IngredientsPage() {
 
   return (
     <div className="grid gap-6">
+      {confirmDialog}
       <PageHeader
         title="Insumos"
         description="Ingredientes, embalagens e materiais que compõem o que você vende."

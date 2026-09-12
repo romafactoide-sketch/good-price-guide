@@ -49,6 +49,9 @@ import {
 import { ensureWorkspace } from "@/lib/workspace";
 import { usePlan } from "@/components/app/paywall";
 import { canCreateProduct } from "@/lib/plans";
+import { CardsSkeleton } from "@/components/app/loading-skeletons";
+import { useConfirm } from "@/components/ui/confirm-dialog";
+import { track } from "@/lib/analytics";
 
 export const Route = createFileRoute("/_authenticated/app/produtos")({
   head: () => ({
@@ -84,6 +87,7 @@ const emptyComposition = (): CompositionLine => ({
 
 function ProductsPage() {
   const { plan, openPaywall } = usePlan();
+  const { confirm, confirmDialog } = useConfirm();
   const [businessId, setBusinessId] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
@@ -344,6 +348,7 @@ function ProductsPage() {
 
   return (
     <div className="grid gap-6">
+      {confirmDialog}
       <PageHeader
         title="Produtos"
         description="Ficha técnica, composição e perdas de cada produto ou serviço."
