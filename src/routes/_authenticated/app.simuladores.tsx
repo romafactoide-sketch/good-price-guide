@@ -61,6 +61,10 @@ const messageOf = (error: unknown, fallback: string) =>
 
 function SimulatorsPage() {
   const { canUse } = usePlan();
+  return <SimulatorsContent />;
+}
+
+function SimulatorsContent() {
   const { loading, products, channels, fixedCostsCents, proLaboreCents, monthlyGoalCents } =
     usePricingData();
 
