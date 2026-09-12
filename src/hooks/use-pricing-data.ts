@@ -13,6 +13,7 @@ export type PricingData = {
   fixedCostsCents: number;
   proLaboreCents: number;
   monthlyGoalCents: number;
+  criticalMarginPercentage: number;
 };
 
 /** Carrega apenas os dados do negócio do usuário autenticado. */
