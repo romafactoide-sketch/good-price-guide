@@ -657,9 +657,15 @@ function PricingPage() {
                           className="border-b border-border/70 last:border-0"
                         >
                           <td className="px-5 py-4">
-                            <span className="font-semibold">{item.product.name}</span>
+                            <Link
+                              to="/app/resultado/$productId"
+                              params={{ productId: item.product.id }}
+                              className="font-semibold text-foreground hover:text-primary-dark hover:underline"
+                            >
+                              {item.product.name}
+                            </Link>
                             <span className="block text-xs text-muted-foreground">
-                              Margem desejada {pct(item.targetMargin)}
+                              Margem desejada {pct(item.targetMargin)} · ver resultado
                             </span>
                           </td>
                           <td className="px-5 py-4 text-right tabular-nums">
