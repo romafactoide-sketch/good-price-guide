@@ -52,6 +52,7 @@ export function usePricingData() {
         ),
         proLaboreCents: Number(business.pro_labore_cents ?? 0),
         monthlyGoalCents: Number(business.monthly_revenue_cents ?? 0),
+        criticalMarginPercentage: Number(business.critical_margin_percentage ?? 5),
       });
     })().catch(() => {
       if (!active) return;
