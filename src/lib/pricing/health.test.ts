@@ -5,27 +5,27 @@ describe("classificação de produtos", () => {
   const target = 20;
 
   it("saudável quando a margem atinge o alvo", () => {
-    expect(classifyProductHealth({ currentMarginPercentage: 25, targetMarginPercentage: target })).toBe(
-      "healthy",
-    );
-    expect(classifyProductHealth({ currentMarginPercentage: 20, targetMarginPercentage: target })).toBe(
-      "healthy",
-    );
+    expect(
+      classifyProductHealth({ currentMarginPercentage: 25, targetMarginPercentage: target }),
+    ).toBe("healthy");
+    expect(
+      classifyProductHealth({ currentMarginPercentage: 20, targetMarginPercentage: target }),
+    ).toBe("healthy");
   });
 
   it("atenção quando a margem é positiva mas abaixo do alvo", () => {
-    expect(classifyProductHealth({ currentMarginPercentage: 12, targetMarginPercentage: target })).toBe(
-      "attention",
-    );
+    expect(
+      classifyProductHealth({ currentMarginPercentage: 12, targetMarginPercentage: target }),
+    ).toBe("attention");
   });
 
   it("crítico no limite padrão de 5% ou abaixo", () => {
-    expect(classifyProductHealth({ currentMarginPercentage: 5, targetMarginPercentage: target })).toBe(
-      "critical",
-    );
-    expect(classifyProductHealth({ currentMarginPercentage: -3, targetMarginPercentage: target })).toBe(
-      "critical",
-    );
+    expect(
+      classifyProductHealth({ currentMarginPercentage: 5, targetMarginPercentage: target }),
+    ).toBe("critical");
+    expect(
+      classifyProductHealth({ currentMarginPercentage: -3, targetMarginPercentage: target }),
+    ).toBe("critical");
   });
 
   it("respeita um limite crítico configurado", () => {
@@ -39,9 +39,9 @@ describe("classificação de produtos", () => {
   });
 
   it("sem dados quando não há margem calculável", () => {
-    expect(classifyProductHealth({ currentMarginPercentage: null, targetMarginPercentage: target })).toBe(
-      "unknown",
-    );
+    expect(
+      classifyProductHealth({ currentMarginPercentage: null, targetMarginPercentage: target }),
+    ).toBe("unknown");
   });
 });
 

@@ -67,7 +67,15 @@ function RecoverPage() {
         >
           <div className="grid gap-1.5">
             <Label htmlFor="email">E-mail</Label>
-            <Input id="email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="voce@seunegocio.com" autoComplete="email" />
+            <Input
+              id="email"
+              type="email"
+              required
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="voce@seunegocio.com"
+              autoComplete="email"
+            />
           </div>
           {error ? <p className="text-sm text-destructive">{error}</p> : null}
           <Button type="submit" variant="hero" size="lg" className="mt-2 w-full" disabled={loading}>

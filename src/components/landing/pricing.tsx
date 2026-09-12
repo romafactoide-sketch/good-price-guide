@@ -60,9 +60,7 @@ export function Pricing() {
             key={plan.name}
             className={cn(
               "rounded-3xl border bg-card p-7 shadow-soft",
-              plan.featured
-                ? "border-primary/40 shadow-lift lg:-mt-4 lg:pb-10"
-                : "border-border",
+              plan.featured ? "border-primary/40 shadow-lift lg:-mt-4 lg:pb-10" : "border-border",
             )}
           >
             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">

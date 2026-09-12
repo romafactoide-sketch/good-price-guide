@@ -44,49 +44,68 @@ function LoginPage() {
       }
     >
       <div className="grid gap-5">
-      <GoogleButton />
-      <form
-        className="grid gap-4"
-        onSubmit={async (event) => {
-          event.preventDefault();
-          setLoading(true);
-          setError("");
-          const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-          if (signInError) {
-            setError(describeAuthError("signInWithPassword", signInError));
-            setLoading(false);
-            return;
-          }
-          try {
-            const business = await ensureWorkspace();
-            navigate({ to: business.onboarding_completed ? "/app" : "/onboarding" });
-          } catch (workspaceError) {
-            setError(describeAuthError("ensureWorkspace", workspaceError));
-            setLoading(false);
-          }
-        }}
-      >
-        <div className="grid gap-1.5">
-          <Label htmlFor="email">E-mail</Label>
-          <Input id="email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="voce@seunegocio.com" autoComplete="email" />
-        </div>
-        <div className="grid gap-1.5">
-          <div className="flex items-baseline justify-between gap-3">
-            <Label htmlFor="password">Senha</Label>
-            <Link
-              to="/recuperar-senha"
-              className="text-xs font-medium text-primary hover:underline"
-            >
-              Esqueci minha senha
-            </Link>
+        <GoogleButton />
+        <form
+          className="grid gap-4"
+          onSubmit={async (event) => {
+            event.preventDefault();
+            setLoading(true);
+            setError("");
+            const { error: signInError } = await supabase.auth.signInWithPassword({
+              email,
+              password,
+            });
+            if (signInError) {
+              setError(describeAuthError("signInWithPassword", signInError));
+              setLoading(false);
+              return;
+            }
+            try {
+              const business = await ensureWorkspace();
+              navigate({ to: business.onboarding_completed ? "/app" : "/onboarding" });
+            } catch (workspaceError) {
+              setError(describeAuthError("ensureWorkspace", workspaceError));
+              setLoading(false);
+            }
+          }}
+        >
+          <div className="grid gap-1.5">
+            <Label htmlFor="email">E-mail</Label>
+            <Input
+              id="email"
+              type="email"
+              required
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="voce@seunegocio.com"
+              autoComplete="email"
+            />
           </div>
-          <Input id="password" type="password" required value={password} onChange={(event) => setPassword(event.target.value)} placeholder="••••••••" autoComplete="current-password" />
-        </div>
-        {error ? <p className="text-sm text-destructive">{error}</p> : null}
-        <Button type="submit" variant="hero" size="lg" className="mt-2 w-full" disabled={loading}>
-          {loading ? "Entrando..." : "Entrar"}
-        </Button>
-      </form>
+          <div className="grid gap-1.5">
+            <div className="flex items-baseline justify-between gap-3">
+              <Label htmlFor="password">Senha</Label>
+              <Link
+                to="/recuperar-senha"
+                className="text-xs font-medium text-primary hover:underline"
+              >
+                Esqueci minha senha
+              </Link>
+            </div>
+            <Input
+              id="password"
+              type="password"
+              required
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="••••••••"
+              autoComplete="current-password"
+            />
+          </div>
+          {error ? <p className="text-sm text-destructive">{error}</p> : null}
+          <Button type="submit" variant="hero" size="lg" className="mt-2 w-full" disabled={loading}>
+            {loading ? "Entrando..." : "Entrar"}
+          </Button>
+        </form>
       </div>
     </AuthLayout>
   );
