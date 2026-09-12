@@ -48,8 +48,15 @@ const statusTone: Record<HealthStatus, "success" | "warning" | "danger" | "secon
 const barTone = { high: "primary", medium: "warning", low: "danger" } as const;
 
 function HealthPage() {
-  const { loading, rows, counts, score, averageMarginPercentage, breakEvenCents, criticalMarginPercentage } =
-    useBusinessHealth();
+  const {
+    loading,
+    rows,
+    counts,
+    score,
+    averageMarginPercentage,
+    breakEvenCents,
+    criticalMarginPercentage,
+  } = useBusinessHealth();
 
   if (loading) {
     return (
@@ -145,7 +152,9 @@ function HealthPage() {
                       ) : null}
                     </td>
                     <td className="px-5 py-4 text-right tabular-nums">
-                      {row.currentPriceCents > 0 ? formatBRLFromCents(row.currentPriceCents) : NO_DATA}
+                      {row.currentPriceCents > 0
+                        ? formatBRLFromCents(row.currentPriceCents)
+                        : NO_DATA}
                     </td>
                     <td className="px-5 py-4 text-right tabular-nums">
                       {row.healthyPriceCents === null
@@ -164,7 +173,10 @@ function HealthPage() {
                     <td className="px-5 py-4">
                       <div className="flex justify-end">
                         <Button asChild variant="subtle" size="sm">
-                          <Link to="/app/resultado/$productId" params={{ productId: row.product.id }}>
+                          <Link
+                            to="/app/resultado/$productId"
+                            params={{ productId: row.product.id }}
+                          >
                             Ajustar preço
                           </Link>
                         </Button>

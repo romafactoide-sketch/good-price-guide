@@ -248,7 +248,10 @@ export const featureBenefits: Record<FeatureId, { title: string; benefit: string
     title: "Insumos ilimitados",
     benefit: "Cadastre todos os seus insumos e tenha o custo real de cada receita.",
   },
-  multi_business: { title: "Mais de um negócio", benefit: "Gerencie várias operações na mesma conta." },
+  multi_business: {
+    title: "Mais de um negócio",
+    benefit: "Gerencie várias operações na mesma conta.",
+  },
   extra_users: { title: "Usuários adicionais", benefit: "Traga sua equipe para dentro." },
   units: { title: "Unidades", benefit: "Separe lojas e pontos de venda." },
   consolidated_dashboard: {

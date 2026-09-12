@@ -203,10 +203,7 @@ function AlertsPage() {
                 <div className="flex shrink-0 flex-wrap gap-2">
                   {alert.entity_type === "product" && alert.entity_id ? (
                     <Button asChild variant="subtle" size="sm">
-                      <Link
-                        to="/app/resultado/$productId"
-                        params={{ productId: alert.entity_id }}
-                      >
+                      <Link to="/app/resultado/$productId" params={{ productId: alert.entity_id }}>
                         Ver produto
                       </Link>
                     </Button>

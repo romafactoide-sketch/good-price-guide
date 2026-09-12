@@ -310,10 +310,7 @@ function PricingPage() {
   /** Canais extras fazem parte da precificação por canal (plano pago). */
   function startChannel() {
     if (!canUse("channel_pricing") && channels.length >= 1) {
-      openPaywall(
-        "channel_pricing",
-        "Seu plano gratuito permite 1 canal de venda.",
-      );
+      openPaywall("channel_pricing", "Seu plano gratuito permite 1 canal de venda.");
       return;
     }
     showChannelForm();

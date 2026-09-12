@@ -69,7 +69,7 @@ export const Route = createFileRoute("/_authenticated/app/produtos")({
     ],
   }),
   validateSearch: (search: Record<string, unknown>): { novo?: boolean } =>
-    search['novo'] === true || search['novo'] === "true" ? { novo: true } : {},
+    search["novo"] === true || search["novo"] === "true" ? { novo: true } : {},
   component: ProductsPage,
 });
 
@@ -425,7 +425,9 @@ function ProductsPage() {
                   </dd>
                 </div>
                 <div className="flex justify-between">
-                  <dt className="text-muted-foreground">Perda ({Number(product.waste_percentage)}%)</dt>
+                  <dt className="text-muted-foreground">
+                    Perda ({Number(product.waste_percentage)}%)
+                  </dt>
                   <dd className="tabular-nums">
                     {formatBRLFromCents(Math.round(Number(product.waste_cost_cents)))}
                   </dd>
@@ -577,7 +579,9 @@ function ProductsPage() {
                       <Label>Unidade</Label>
                       <Select
                         value={line.unit}
-                        onValueChange={(value) => updateLine(index, { unit: value as PurchaseUnit })}
+                        onValueChange={(value) =>
+                          updateLine(index, { unit: value as PurchaseUnit })
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue />
