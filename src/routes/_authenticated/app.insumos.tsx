@@ -71,6 +71,7 @@ export const Route = createFileRoute("/_authenticated/app/insumos")({
 type Usage = Record<string, number>;
 
 function IngredientsPage() {
+  const { plan, openPaywall } = usePlan();
   const [businessId, setBusinessId] = useState("");
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [usage, setUsage] = useState<Usage>({});
