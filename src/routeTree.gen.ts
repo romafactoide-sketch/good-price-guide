@@ -23,9 +23,11 @@ import { Route as AuthenticatedAppConfiguracoesRouteImport } from './routes/_aut
 import { Route as AuthenticatedAppCustosRouteImport } from './routes/_authenticated/app.custos'
 import { Route as AuthenticatedAppInsumosRouteImport } from './routes/_authenticated/app.insumos'
 import { Route as AuthenticatedAppMetasRouteImport } from './routes/_authenticated/app.metas'
+import { Route as AuthenticatedAppPlanosRouteImport } from './routes/_authenticated/app.planos'
 import { Route as AuthenticatedAppPrecificacaoRouteImport } from './routes/_authenticated/app.precificacao'
 import { Route as AuthenticatedAppProdutosRouteImport } from './routes/_authenticated/app.produtos'
 import { Route as AuthenticatedAppRelatoriosRouteImport } from './routes/_authenticated/app.relatorios'
+import { Route as AuthenticatedAppSaudeRouteImport } from './routes/_authenticated/app.saude'
 import { Route as AuthenticatedAppServicosRouteImport } from './routes/_authenticated/app.servicos'
 import { Route as AuthenticatedAppSimuladoresRouteImport } from './routes/_authenticated/app.simuladores'
 import { Route as AuthenticatedAppResultadoProductIdRouteImport } from './routes/_authenticated/app.resultado.$productId'
@@ -100,6 +102,11 @@ const AuthenticatedAppMetasRoute = AuthenticatedAppMetasRouteImport.update({
   path: '/metas',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppPlanosRoute = AuthenticatedAppPlanosRouteImport.update({
+  id: '/planos',
+  path: '/planos',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppPrecificacaoRoute =
   AuthenticatedAppPrecificacaoRouteImport.update({
     id: '/precificacao',
@@ -118,6 +125,11 @@ const AuthenticatedAppRelatoriosRoute =
     path: '/relatorios',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppSaudeRoute = AuthenticatedAppSaudeRouteImport.update({
+  id: '/saude',
+  path: '/saude',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppServicosRoute =
   AuthenticatedAppServicosRouteImport.update({
     id: '/servicos',
@@ -150,9 +162,11 @@ export interface FileRoutesByFullPath {
   '/app/custos': typeof AuthenticatedAppCustosRoute
   '/app/insumos': typeof AuthenticatedAppInsumosRoute
   '/app/metas': typeof AuthenticatedAppMetasRoute
+  '/app/planos': typeof AuthenticatedAppPlanosRoute
   '/app/precificacao': typeof AuthenticatedAppPrecificacaoRoute
   '/app/produtos': typeof AuthenticatedAppProdutosRoute
   '/app/relatorios': typeof AuthenticatedAppRelatoriosRoute
+  '/app/saude': typeof AuthenticatedAppSaudeRoute
   '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/app/simuladores': typeof AuthenticatedAppSimuladoresRoute
   '/app/': typeof AuthenticatedAppIndexRoute
@@ -170,9 +184,11 @@ export interface FileRoutesByTo {
   '/app/custos': typeof AuthenticatedAppCustosRoute
   '/app/insumos': typeof AuthenticatedAppInsumosRoute
   '/app/metas': typeof AuthenticatedAppMetasRoute
+  '/app/planos': typeof AuthenticatedAppPlanosRoute
   '/app/precificacao': typeof AuthenticatedAppPrecificacaoRoute
   '/app/produtos': typeof AuthenticatedAppProdutosRoute
   '/app/relatorios': typeof AuthenticatedAppRelatoriosRoute
+  '/app/saude': typeof AuthenticatedAppSaudeRoute
   '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/app/simuladores': typeof AuthenticatedAppSimuladoresRoute
   '/app': typeof AuthenticatedAppIndexRoute
@@ -193,9 +209,11 @@ export interface FileRoutesById {
   '/_authenticated/app/custos': typeof AuthenticatedAppCustosRoute
   '/_authenticated/app/insumos': typeof AuthenticatedAppInsumosRoute
   '/_authenticated/app/metas': typeof AuthenticatedAppMetasRoute
+  '/_authenticated/app/planos': typeof AuthenticatedAppPlanosRoute
   '/_authenticated/app/precificacao': typeof AuthenticatedAppPrecificacaoRoute
   '/_authenticated/app/produtos': typeof AuthenticatedAppProdutosRoute
   '/_authenticated/app/relatorios': typeof AuthenticatedAppRelatoriosRoute
+  '/_authenticated/app/saude': typeof AuthenticatedAppSaudeRoute
   '/_authenticated/app/servicos': typeof AuthenticatedAppServicosRoute
   '/_authenticated/app/simuladores': typeof AuthenticatedAppSimuladoresRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
@@ -216,9 +234,11 @@ export interface FileRouteTypes {
     | '/app/custos'
     | '/app/insumos'
     | '/app/metas'
+    | '/app/planos'
     | '/app/precificacao'
     | '/app/produtos'
     | '/app/relatorios'
+    | '/app/saude'
     | '/app/servicos'
     | '/app/simuladores'
     | '/app/'
@@ -236,9 +256,11 @@ export interface FileRouteTypes {
     | '/app/custos'
     | '/app/insumos'
     | '/app/metas'
+    | '/app/planos'
     | '/app/precificacao'
     | '/app/produtos'
     | '/app/relatorios'
+    | '/app/saude'
     | '/app/servicos'
     | '/app/simuladores'
     | '/app'
@@ -258,9 +280,11 @@ export interface FileRouteTypes {
     | '/_authenticated/app/custos'
     | '/_authenticated/app/insumos'
     | '/_authenticated/app/metas'
+    | '/_authenticated/app/planos'
     | '/_authenticated/app/precificacao'
     | '/_authenticated/app/produtos'
     | '/_authenticated/app/relatorios'
+    | '/_authenticated/app/saude'
     | '/_authenticated/app/servicos'
     | '/_authenticated/app/simuladores'
     | '/_authenticated/app/'
@@ -376,6 +400,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppMetasRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/planos': {
+      id: '/_authenticated/app/planos'
+      path: '/planos'
+      fullPath: '/app/planos'
+      preLoaderRoute: typeof AuthenticatedAppPlanosRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/precificacao': {
       id: '/_authenticated/app/precificacao'
       path: '/precificacao'
@@ -395,6 +426,13 @@ declare module '@tanstack/react-router' {
       path: '/relatorios'
       fullPath: '/app/relatorios'
       preLoaderRoute: typeof AuthenticatedAppRelatoriosRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/saude': {
+      id: '/_authenticated/app/saude'
+      path: '/saude'
+      fullPath: '/app/saude'
+      preLoaderRoute: typeof AuthenticatedAppSaudeRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/servicos': {
@@ -427,9 +465,11 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppCustosRoute: typeof AuthenticatedAppCustosRoute
   AuthenticatedAppInsumosRoute: typeof AuthenticatedAppInsumosRoute
   AuthenticatedAppMetasRoute: typeof AuthenticatedAppMetasRoute
+  AuthenticatedAppPlanosRoute: typeof AuthenticatedAppPlanosRoute
   AuthenticatedAppPrecificacaoRoute: typeof AuthenticatedAppPrecificacaoRoute
   AuthenticatedAppProdutosRoute: typeof AuthenticatedAppProdutosRoute
   AuthenticatedAppRelatoriosRoute: typeof AuthenticatedAppRelatoriosRoute
+  AuthenticatedAppSaudeRoute: typeof AuthenticatedAppSaudeRoute
   AuthenticatedAppServicosRoute: typeof AuthenticatedAppServicosRoute
   AuthenticatedAppSimuladoresRoute: typeof AuthenticatedAppSimuladoresRoute
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
@@ -442,9 +482,11 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppCustosRoute: AuthenticatedAppCustosRoute,
   AuthenticatedAppInsumosRoute: AuthenticatedAppInsumosRoute,
   AuthenticatedAppMetasRoute: AuthenticatedAppMetasRoute,
+  AuthenticatedAppPlanosRoute: AuthenticatedAppPlanosRoute,
   AuthenticatedAppPrecificacaoRoute: AuthenticatedAppPrecificacaoRoute,
   AuthenticatedAppProdutosRoute: AuthenticatedAppProdutosRoute,
   AuthenticatedAppRelatoriosRoute: AuthenticatedAppRelatoriosRoute,
+  AuthenticatedAppSaudeRoute: AuthenticatedAppSaudeRoute,
   AuthenticatedAppServicosRoute: AuthenticatedAppServicosRoute,
   AuthenticatedAppSimuladoresRoute: AuthenticatedAppSimuladoresRoute,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
