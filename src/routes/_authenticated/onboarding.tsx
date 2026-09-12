@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { supabase } from "@/integrations/supabase/client";
+import { track } from "@/lib/analytics";
 import { centsToCurrencyText, currencyTextToCents, formatBRLFromCents } from "@/lib/money";
 import { ensureWorkspace } from "@/lib/workspace";
 
@@ -150,7 +151,10 @@ function OnboardingPage() {
       };
       const { error: saveError } = await supabase.rpc("save_onboarding_step", onboardingArgs);
       if (saveError) throw saveError;
-      if (complete) navigate({ to: "/app", replace: true });
+      if (complete) {
+        track("onboarding_completed", { steps: 4 });
+        navigate({ to: "/app", replace: true });
+      }
       else setStep(next);
     } catch (saveFailure) {
       console.error("[onboarding:save]", saveFailure);

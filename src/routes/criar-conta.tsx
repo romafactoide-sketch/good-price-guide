@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
+import { track } from "@/lib/analytics";
 import { ensureWorkspace } from "@/lib/workspace";
 import { describeAuthError } from "@/lib/auth-errors";
 import { useNavigate } from "@tanstack/react-router";
@@ -62,6 +63,7 @@ function SignUpPage() {
               return setMessage("A senha precisa ter pelo menos 8 caracteres.");
             setLoading(true);
             setMessage("");
+            track("signup_started", { method: "email" });
             const { data, error } = await supabase.auth.signUp({
               email,
               password,
@@ -86,6 +88,7 @@ function SignUpPage() {
             }
             // Caso A: confirmação desativada — já existe sessão, então criamos perfil/negócio.
             try {
+              track("signup_completed", { method: "email" });
               await ensureWorkspace(business);
               navigate({ to: "/onboarding" });
             } catch (workspaceError) {
