@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.alert_ingredient_cost_change() FROM PUBLIC, anon, authenticated;
