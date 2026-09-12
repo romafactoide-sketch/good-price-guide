@@ -61,13 +61,6 @@ const messageOf = (error: unknown, fallback: string) =>
 
 function SimulatorsPage() {
   const { canUse } = usePlan();
-  return <SimulatorsContent />;
-}
-
-function SimulatorsContent() {
-  const { loading, products, channels, fixedCostsCents, proLaboreCents, monthlyGoalCents } =
-    usePricingData();
-
   if (!canUse("simulators")) {
     return (
       <div className="grid gap-6">
@@ -79,6 +72,12 @@ function SimulatorsContent() {
       </div>
     );
   }
+  return <SimulatorsContent />;
+}
+
+function SimulatorsContent() {
+  const { loading, products, channels, fixedCostsCents, proLaboreCents, monthlyGoalCents } =
+    usePricingData();
 
   const [productId, setProductId] = useState("");
   const [channelId, setChannelId] = useState("");
