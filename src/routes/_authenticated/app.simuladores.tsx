@@ -408,9 +408,7 @@ function SimulatorsPage() {
                           ? NO_DATA
                           : formatBRLFromCents(discountedScenario.unitProfitCents)
                       }
-                      tone={
-                        (discountedScenario?.unitProfitCents ?? 0) >= 0 ? "success" : "danger"
-                      }
+                      tone={(discountedScenario?.unitProfitCents ?? 0) >= 0 ? "success" : "danger"}
                       hint="Com o custo fixo por unidade"
                     />
                     <StatCard
@@ -526,9 +524,7 @@ function SimulatorsPage() {
             fixedCostsCents={monthlyCommitments}
             contributionMarginPercentage={weighted.percentage}
             breakEvenCents={breakEvenCents}
-            goalCents={
-              goal?.plan ? goal.plan.requiredRevenueCents : monthlyGoalCents
-            }
+            goalCents={goal?.plan ? goal.plan.requiredRevenueCents : monthlyGoalCents}
             note={
               goal?.plan
                 ? "Meta: faturamento necessário para o lucro que você informou."

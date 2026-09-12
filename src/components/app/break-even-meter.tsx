@@ -24,7 +24,8 @@ export function BreakEvenMeter({
   note?: string;
 }) {
   const scale = Math.max(breakEvenCents ?? 0, goalCents, 1);
-  const breakEvenAt = breakEvenCents === null ? null : Math.min(100, (breakEvenCents / scale) * 100);
+  const breakEvenAt =
+    breakEvenCents === null ? null : Math.min(100, (breakEvenCents / scale) * 100);
   const goalAt = goalCents > 0 ? Math.min(100, (goalCents / scale) * 100) : null;
 
   return (

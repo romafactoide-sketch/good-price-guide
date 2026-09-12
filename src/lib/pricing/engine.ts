@@ -520,12 +520,14 @@ export function calculateGoalPlan(input: {
   }
   const days = input.daysPerMonth ?? 30;
   if (days <= 0) throw new PricingError("Informe quantos dias por mês você vende.");
-  const requiredRevenueCents =
-    (input.fixedCostsCents + input.targetProfitCents) / (margin / 100);
+  const requiredRevenueCents = (input.fixedCostsCents + input.targetProfitCents) / (margin / 100);
   const breakEvenRevenueCents = calculateBreakEvenRevenue(input.fixedCostsCents, margin);
   const ticket = nonNegative(input.averageTicketCents ?? 0, "O ticket médio");
   const requiredSales = ticket > 0 ? requiredRevenueCents / ticket : null;
-  const expectedUnits = nonNegative(input.expectedMonthlySales ?? 0, "A quantidade vendida por mês");
+  const expectedUnits = nonNegative(
+    input.expectedMonthlySales ?? 0,
+    "A quantidade vendida por mês",
+  );
   return {
     requiredRevenueCents,
     breakEvenRevenueCents,

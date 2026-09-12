@@ -82,7 +82,8 @@ function ResultPage() {
           maxPercentage: parseDecimal(strategicMax),
         },
       });
-      const referencePriceCents = currentPriceCents > 0 ? currentPriceCents : range.healthyPriceCents;
+      const referencePriceCents =
+        currentPriceCents > 0 ? currentPriceCents : range.healthyPriceCents;
       const feesAtReference = calculateVariableFees(referencePriceCents, fees);
       return {
         ok: true as const,
@@ -343,9 +344,7 @@ function ResultPage() {
               </section>
 
               <section className="grid gap-3 rounded-2xl border border-border bg-card p-5 shadow-soft">
-                <h2 className="text-base font-bold text-foreground">
-                  Como chegamos neste preço?
-                </h2>
+                <h2 className="text-base font-bold text-foreground">Como chegamos neste preço?</h2>
                 <ul className="grid gap-2 text-sm text-muted-foreground">
                   <li>
                     Seu produto custa{" "}
@@ -367,8 +366,7 @@ function ResultPage() {
                     <strong className="text-primary-dark">
                       {formatBRLFromCents(result.healthyPriceCents)}
                     </strong>{" "}
-                    — o valor que cobre o custo, paga as taxas e ainda deixa a margem que você
-                    quer.
+                    — o valor que cobre o custo, paga as taxas e ainda deixa a margem que você quer.
                   </li>
                   <li>
                     Vendendo por menos de{" "}

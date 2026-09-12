@@ -37,7 +37,8 @@ export function usePricingData() {
         supabase.from("fixed_costs").select("amount_cents").eq("business_id", business.id),
       ]);
       if (!active) return;
-      if (productsResult.error || costsResult.error) throw productsResult.error ?? costsResult.error;
+      if (productsResult.error || costsResult.error)
+        throw productsResult.error ?? costsResult.error;
       setData({
         loading: false,
         businessId: business.id,
