@@ -123,16 +123,14 @@ function OnboardingPage() {
           (cost) => cost.name.trim() && currencyTextToCents(cost.amount) > 0,
         );
         if (valid.length) {
-          const { error: costError } = await supabase
-            .from("fixed_costs")
-            .insert(
-              valid.map((cost) => ({
-                business_id: businessId,
-                name: cost.name.trim(),
-                category: cost.category,
-                amount_cents: currencyTextToCents(cost.amount),
-              })),
-            );
+          const { error: costError } = await supabase.from("fixed_costs").insert(
+            valid.map((cost) => ({
+              business_id: businessId,
+              name: cost.name.trim(),
+              category: cost.category,
+              amount_cents: currencyTextToCents(cost.amount),
+            })),
+          );
           if (costError) throw costError;
         }
       }
