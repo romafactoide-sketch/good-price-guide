@@ -8,3 +8,5 @@
 - [x] Motor financeiro em `src/lib/pricing` (funções puras + 39 testes), canais de venda, preços mínimo/saudável/estratégico, markup, MC, ponto de equilíbrio e impacto de desconto
 - [x] Dashboard: substituir os indicadores demonstrativos restantes por dados reais do negócio (demo só com VITE_DEMO_MODE=true)
 - [x] Ferramentas de decisão: página "Resultado da precificação", simuladores "E se?", desconto e meta, ponto de equilíbrio visual (53 testes no motor)
+- [x] Recorrência: score de saúde do negócio, classificação de produtos (saudável/atenção/crítico), página "Saúde dos produtos", alertas persistidos com filtros, planos Free/Pro/Negócio, limites centralizados em `src/lib/plans.ts`, paywall contextual e página de planos (67 testes)
+- [ ] Integrar cobrança real (Stripe/Paddle) na troca de plano — hoje a troca é apenas registro interno
