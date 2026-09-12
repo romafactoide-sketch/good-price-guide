@@ -48,7 +48,7 @@ export const Route = createFileRoute("/_authenticated/app/resultado/$productId")
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: ResultPage;
+  component: ResultPage,
 });
 
 const NO_DATA = "—";
