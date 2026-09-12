@@ -26,6 +26,7 @@ export function usePricingData() {
     fixedCostsCents: 0,
     proLaboreCents: 0,
     monthlyGoalCents: 0,
+    criticalMarginPercentage: 5,
   });
 
   useEffect(() => {
