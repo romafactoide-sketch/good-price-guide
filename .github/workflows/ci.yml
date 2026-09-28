@@ -38,7 +38,7 @@ jobs:
         run: bun run test
 
       - name: Verificação de tipos
-        run: bunx tsgo --noEmit
+        run: bunx tsc --noEmit
 
       - name: Build de produção
         run: bun run build
