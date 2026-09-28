@@ -19,3 +19,12 @@
 - [x] Mensagens de erro amigáveis com detalhe técnico só no console
 - [ ] Verificação visual autenticada em desktop/tablet/celular e teste de isolamento com duas contas
 - [ ] Cobrança real dos planos
+
+## Kiwify Pro (preparação em branch Codex)
+- [x] Mensal R$29,90 e anual R$247 recorrentes no mesmo produto; vitalício R$347 em produto separado
+- [x] Registrar links e IDs dos produtos; checkout desabilitado até webhooks verificados
+- [x] Remover ativação de plano pago pelo navegador; migração bloqueia escrita direta de assinaturas
+- [x] Remover .env do índice Git e ignorar novos arquivos de ambiente
+- [ ] Aplicar migração e confirmar fluxo de onboarding no banco
+- [ ] Implementar webhook autenticado, idempotente, renovação, cancelamento, reembolso e vínculo entre compra e usuário
+- [ ] Testar com duas contas e só depois habilitar os links de checkout

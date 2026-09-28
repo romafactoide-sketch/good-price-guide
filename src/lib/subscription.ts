@@ -32,23 +32,3 @@ export const subscriptionQuery = queryOptions({
     return data ?? null;
   },
 });
-
-/** Troca de plano local (sem cobrança real nesta fase). */
-export async function changePlan(plan: PlanId) {
-  const { data: userData, error: userError } = await supabase.auth.getUser();
-  if (userError || !userData.user) throw userError ?? new Error("Sessão não encontrada");
-  const { error } = await supabase.from("subscriptions").upsert(
-    {
-      user_id: userData.user.id,
-      plan,
-      status: "active",
-      billing_cycle: "monthly",
-      started_at: new Date().toISOString(),
-      expires_at: null,
-      provider: "none",
-      provider_subscription_id: null,
-    },
-    { onConflict: "user_id" },
-  );
-  if (error) throw error;
-}

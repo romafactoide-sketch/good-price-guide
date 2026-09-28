@@ -30,6 +30,7 @@ import { Route as AuthenticatedAppRelatoriosRouteImport } from './routes/_authen
 import { Route as AuthenticatedAppSaudeRouteImport } from './routes/_authenticated/app.saude'
 import { Route as AuthenticatedAppServicosRouteImport } from './routes/_authenticated/app.servicos'
 import { Route as AuthenticatedAppSimuladoresRouteImport } from './routes/_authenticated/app.simuladores'
+import { Route as ApiPublicKiwifyWebhookRouteImport } from './routes/api/public/kiwify-webhook'
 import { Route as AuthenticatedAppResultadoProductIdRouteImport } from './routes/_authenticated/app.resultado.$productId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -142,6 +143,11 @@ const AuthenticatedAppSimuladoresRoute =
     path: '/simuladores',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const ApiPublicKiwifyWebhookRoute = ApiPublicKiwifyWebhookRouteImport.update({
+  id: '/api/public/kiwify-webhook',
+  path: '/api/public/kiwify-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAppResultadoProductIdRoute =
   AuthenticatedAppResultadoProductIdRouteImport.update({
     id: '/resultado/$productId',
@@ -169,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/app/saude': typeof AuthenticatedAppSaudeRoute
   '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/app/simuladores': typeof AuthenticatedAppSimuladoresRoute
+  '/api/public/kiwify-webhook': typeof ApiPublicKiwifyWebhookRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/app/resultado/$productId': typeof AuthenticatedAppResultadoProductIdRoute
 }
@@ -191,6 +198,7 @@ export interface FileRoutesByTo {
   '/app/saude': typeof AuthenticatedAppSaudeRoute
   '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/app/simuladores': typeof AuthenticatedAppSimuladoresRoute
+  '/api/public/kiwify-webhook': typeof ApiPublicKiwifyWebhookRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/app/resultado/$productId': typeof AuthenticatedAppResultadoProductIdRoute
 }
@@ -216,6 +224,7 @@ export interface FileRoutesById {
   '/_authenticated/app/saude': typeof AuthenticatedAppSaudeRoute
   '/_authenticated/app/servicos': typeof AuthenticatedAppServicosRoute
   '/_authenticated/app/simuladores': typeof AuthenticatedAppSimuladoresRoute
+  '/api/public/kiwify-webhook': typeof ApiPublicKiwifyWebhookRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/app/resultado/$productId': typeof AuthenticatedAppResultadoProductIdRoute
 }
@@ -241,6 +250,7 @@ export interface FileRouteTypes {
     | '/app/saude'
     | '/app/servicos'
     | '/app/simuladores'
+    | '/api/public/kiwify-webhook'
     | '/app/'
     | '/app/resultado/$productId'
   fileRoutesByTo: FileRoutesByTo
@@ -263,6 +273,7 @@ export interface FileRouteTypes {
     | '/app/saude'
     | '/app/servicos'
     | '/app/simuladores'
+    | '/api/public/kiwify-webhook'
     | '/app'
     | '/app/resultado/$productId'
   id:
@@ -287,6 +298,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/saude'
     | '/_authenticated/app/servicos'
     | '/_authenticated/app/simuladores'
+    | '/api/public/kiwify-webhook'
     | '/_authenticated/app/'
     | '/_authenticated/app/resultado/$productId'
   fileRoutesById: FileRoutesById
@@ -298,6 +310,7 @@ export interface RootRouteChildren {
   EntrarRoute: typeof EntrarRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
   RedefinirSenhaRoute: typeof RedefinirSenhaRoute
+  ApiPublicKiwifyWebhookRoute: typeof ApiPublicKiwifyWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -449,6 +462,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppSimuladoresRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/api/public/kiwify-webhook': {
+      id: '/api/public/kiwify-webhook'
+      path: '/api/public/kiwify-webhook'
+      fullPath: '/api/public/kiwify-webhook'
+      preLoaderRoute: typeof ApiPublicKiwifyWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/app/resultado/$productId': {
       id: '/_authenticated/app/resultado/$productId'
       path: '/resultado/$productId'
@@ -517,6 +537,7 @@ const rootRouteChildren: RootRouteChildren = {
   EntrarRoute: EntrarRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
   RedefinirSenhaRoute: RedefinirSenhaRoute,
+  ApiPublicKiwifyWebhookRoute: ApiPublicKiwifyWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

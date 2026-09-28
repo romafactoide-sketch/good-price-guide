@@ -10,17 +10,17 @@ const plans = [
     price: "R$ 0",
     period: "para sempre",
     description: "Para testar e precificar seus primeiros itens.",
-    features: ["Até 5 produtos", "Custos e insumos básicos", "Preço mínimo e saudável"],
+    features: ["Até 3 produtos", "Custos e insumos básicos", "Preço mínimo e saudável"],
     cta: "Começar grátis",
     featured: false,
   },
   {
     name: "Pro",
-    price: "R$ 39",
+    price: "R$ 29,90",
     period: "por mês",
     description: "Para quem vende todos os dias e quer margem protegida.",
     features: [
-      "Produtos e serviços ilimitados",
+      "Produtos e insumos ilimitados",
       "Simuladores de preço e desconto",
       "Metas e ponto de equilíbrio",
       "Alertas de margem crítica",
@@ -29,17 +29,26 @@ const plans = [
     featured: true,
   },
   {
-    name: "Negócio",
-    price: "R$ 89",
-    period: "por mês",
-    description: "Para equipes com mais de um ponto de venda.",
+    name: "Anual",
+    price: "R$ 247",
+    period: "por ano, à vista (recorrente)",
+    description: "Todos os recursos Pro com economia de R$ 111,80 por ano.",
     features: [
-      "Tudo do Pro",
-      "Vários negócios na mesma conta",
-      "Relatórios avançados",
-      "Suporte prioritário",
+      "Todos os recursos Pro",
+      "Produtos e insumos ilimitados",
+      "Alertas e simulações",
+      "Pagamento anual à vista",
     ],
-    cta: "Falar com a gente",
+    cta: "Conhecer o Pro",
+    featured: false,
+  },
+  {
+    name: "Vitalício",
+    price: "R$ 347",
+    period: "pagamento único",
+    description: "Acesso permanente aos recursos Pro desta oferta.",
+    features: ["Todos os recursos Pro", "Produtos e insumos ilimitados", "Pagamento único"],
+    cta: "Conhecer o Pro",
     featured: false,
   },
 ];
@@ -54,7 +63,7 @@ export function Pricing() {
         </h2>
       </div>
 
-      <div className="mt-10 grid items-start gap-5 lg:grid-cols-3">
+      <div className="mt-10 grid items-start gap-5 md:grid-cols-2 xl:grid-cols-4">
         {plans.map((plan) => (
           <article
             key={plan.name}
