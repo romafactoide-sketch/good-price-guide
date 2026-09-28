@@ -10,7 +10,7 @@ const offers = [
 
 type RecordValue = Record<string, unknown>;
 function object(value: unknown): RecordValue {
-  return value && typeof value === "object" && !Array.isArray(value) ? value as RecordValue : {};
+  return value && typeof value === "object" && !Array.isArray(value) ? (value as RecordValue) : {};
 }
 function required(name: string): string {
   const value = Deno.env.get(name);
@@ -19,7 +19,8 @@ function required(name: string): string {
 }
 function response(status: number, message: string): Response {
   return new Response(JSON.stringify({ message }), {
-    status, headers: { "content-type": "application/json" },
+    status,
+    headers: { "content-type": "application/json" },
   });
 }
 
@@ -37,7 +38,10 @@ async function apiToken(): Promise<string> {
   if (!result.ok) throw new Error(`Kiwify OAuth HTTP ${result.status}`);
   const body = object(await result.json());
   if (typeof body.access_token !== "string") throw new Error("Kiwify OAuth response invalid");
-  cachedToken = { token: body.access_token, expires: Date.now() + Math.min(Number(body.expires_in) || 3600, 3600) * 1000 };
+  cachedToken = {
+    token: body.access_token,
+    expires: Date.now() + Math.min(Number(body.expires_in) || 3600, 3600) * 1000,
+  };
   return cachedToken.token;
 }
 
@@ -48,22 +52,28 @@ Deno.serve(async (request) => {
     // A separate long random URL secret limits unsolicited requests; sale API is authoritative.
     const expected = required("KIWIFY_WEBHOOK_PATH_SECRET");
     const supplied = new URL(request.url).searchParams.get("key") ?? "";
-    if (expected.length < 32 || supplied.length !== expected.length) return response(401, "unauthorized");
+    if (expected.length < 32 || supplied.length !== expected.length)
+      return response(401, "unauthorized");
     let mismatch = 0;
-    for (let i = 0; i < expected.length; i++) mismatch |= expected.charCodeAt(i) ^ supplied.charCodeAt(i);
+    for (let i = 0; i < expected.length; i++)
+      mismatch |= expected.charCodeAt(i) ^ supplied.charCodeAt(i);
     if (mismatch !== 0) return response(401, "unauthorized");
     if (Number(request.headers.get("content-length")) > 65536) return response(413, "too large");
 
     const event = object(await request.json());
     const orderId = event.order_id;
-    if (typeof orderId !== "string" || !/^[a-zA-Z0-9-]{8,80}$/.test(orderId)) return response(400, "invalid order");
+    if (typeof orderId !== "string" || !/^[a-zA-Z0-9-]{8,80}$/.test(orderId))
+      return response(400, "invalid order");
 
-    const saleResult = await fetch(`https://public-api.kiwify.com/v1/sales/${encodeURIComponent(orderId)}`, {
-      headers: {
-        Authorization: `Bearer ${await apiToken()}`,
-        "x-kiwify-account-id": required("KIWIFY_ACCOUNT_ID"),
+    const saleResult = await fetch(
+      `https://public-api.kiwify.com/v1/sales/${encodeURIComponent(orderId)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${await apiToken()}`,
+          "x-kiwify-account-id": required("KIWIFY_ACCOUNT_ID"),
+        },
       },
-    });
+    );
     if (!saleResult.ok) throw new Error(`Kiwify sale lookup HTTP ${saleResult.status}`);
     const sale = object(await saleResult.json());
     const payment = object(sale.payment);
@@ -71,13 +81,23 @@ Deno.serve(async (request) => {
     const product = object(sale.product);
     const amount = payment.charge_amount;
     const offer = offers.find((item) => item.product === product.id && item.amount === amount);
-    if (sale.id !== orderId || !offer || payment.charge_currency !== "BRL" ||
-      typeof customer.email !== "string" || !customer.email.includes("@") ||
-      typeof sale.approved_date !== "string" || !Number.isFinite(Date.parse(sale.approved_date))) {
+    if (
+      sale.id !== orderId ||
+      !offer ||
+      payment.charge_currency !== "BRL" ||
+      typeof customer.email !== "string" ||
+      !customer.email.includes("@") ||
+      typeof sale.approved_date !== "string" ||
+      !Number.isFinite(Date.parse(sale.approved_date))
+    ) {
       return response(422, "sale does not match an offer");
     }
-    const status = sale.status === "paid" && !sale.refunded_at ? "paid" :
-      sale.status === "refunded" || sale.refunded_at ? "refunded" : null;
+    const status =
+      sale.status === "paid" && !sale.refunded_at
+        ? "paid"
+        : sale.status === "refunded" || sale.refunded_at
+          ? "refunded"
+          : null;
     if (!status) return response(202, "sale not settled");
 
     const supabase = createClient(required("SUPABASE_URL"), required("SUPABASE_SERVICE_ROLE_KEY"), {
