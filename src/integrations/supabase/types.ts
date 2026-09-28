@@ -217,6 +217,47 @@ export type Database = {
           },
         ]
       }
+      kiwify_sales: {
+        Row: {
+          approved_at: string
+          billing_cycle: string
+          created_at: string
+          order_id: string
+          product_id: string
+          sale_status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          approved_at: string
+          billing_cycle: string
+          created_at?: string
+          order_id: string
+          product_id: string
+          sale_status: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          approved_at?: string
+          billing_cycle?: string
+          created_at?: string
+          order_id?: string
+          product_id?: string
+          sale_status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kiwify_sales_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_channels: {
         Row: {
           created_at: string
@@ -545,6 +586,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      apply_verified_kiwify_sale: {
+        Args: {
+          p_approved_at: string
+          p_cycle: string
+          p_email: string
+          p_order_id: string
+          p_product_id: string
+          p_status: string
+        }
+        Returns: string
+      }
       ensure_my_workspace: {
         Args: { business_name?: string }
         Returns: {
