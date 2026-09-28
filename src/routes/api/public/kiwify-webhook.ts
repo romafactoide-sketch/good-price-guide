@@ -10,9 +10,18 @@ const offers = [
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type RecordValue = { [key: string]: any } & {
-  order_id?: unknown; id?: unknown; status?: unknown; refunded_at?: unknown;
-  approved_date?: unknown; payment?: unknown; customer?: unknown; product?: unknown;
-  charge_amount?: unknown; charge_currency?: unknown; email?: unknown; access_token?: unknown;
+  order_id?: unknown;
+  id?: unknown;
+  status?: unknown;
+  refunded_at?: unknown;
+  approved_date?: unknown;
+  payment?: unknown;
+  customer?: unknown;
+  product?: unknown;
+  charge_amount?: unknown;
+  charge_currency?: unknown;
+  email?: unknown;
+  access_token?: unknown;
 };
 function object(value: unknown): RecordValue {
   return value && typeof value === "object" && !Array.isArray(value) ? (value as RecordValue) : {};
