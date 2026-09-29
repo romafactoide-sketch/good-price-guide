@@ -54,7 +54,7 @@ async function apiToken(): Promise<string> {
   return body.access_token;
 }
 
-async function handle(request: Request): Promise<Response> {
+export async function handle(request: Request): Promise<Response> {
   let step = "auth";
   try {
     const expected = required("KIWIFY_WEBHOOK_PATH_SECRET");
