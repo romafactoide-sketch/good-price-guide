@@ -42,7 +42,6 @@ function PlansPage() {
     ? new Intl.DateTimeFormat("pt-BR", {
         timeZone: "America/Sao_Paulo",
         dateStyle: "long",
-        timeStyle: "short",
       }).format(new Date(subscription.expires_at))
     : null;
   return (
@@ -67,7 +66,7 @@ function PlansPage() {
           </p>
           {currentPlan === "pro" && accessEnd ? (
             <p className="mt-1 text-sm text-muted-foreground">
-              Acesso registrado até {accessEnd} (horário de Brasília).
+              Vencimento estimado no app: {accessEnd}. Consulte a Kiwify para o horário exato.
             </p>
           ) : currentPlan === "pro" && subscription?.billing_cycle === "lifetime" ? (
             <p className="mt-1 text-sm text-muted-foreground">Acesso sem vencimento.</p>
