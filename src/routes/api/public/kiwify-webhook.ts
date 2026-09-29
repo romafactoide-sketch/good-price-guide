@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { verifiedSaleStatus } from "@/lib/kiwify-sale-status";
 
 // Webhook público (sem JWT): a Kiwify não envia sessão de usuário.
 // Fail-closed: a venda é conferida na API oficial da Kiwify antes de conceder o Pro.
@@ -82,7 +83,7 @@ async function handle(request: Request): Promise<Response> {
       `https://public-api.kiwify.com/v1/sales/${encodeURIComponent(orderId)}`,
       {
         headers: {
-          Authorization: `Bearer ${await (step = "oauth", apiToken())}`,
+          Authorization: `Bearer ${await ((step = "oauth"), apiToken())}`,
           "x-kiwify-account-id": required("KIWIFY_ACCOUNT_ID"),
         },
       },
@@ -117,12 +118,7 @@ async function handle(request: Request): Promise<Response> {
       });
       return response(422, "sale does not match an offer");
     }
-    const status =
-      sale.status === "paid" && !sale.refunded_at
-        ? "paid"
-        : sale.status === "refunded" || sale.refunded_at
-          ? "refunded"
-          : null;
+    const status = verifiedSaleStatus(sale.status, sale.refunded_at);
     if (!status) return response(202, "sale not settled");
 
     step = "database";
@@ -143,7 +139,8 @@ async function handle(request: Request): Promise<Response> {
       step,
       name: typeof e["name"] === "string" ? e["name"] : typeof error,
       code: typeof e["code"] === "string" ? e["code"] : null,
-      message: typeof e["message"] === "string" ? e["message"].slice(0, 200) : String(error).slice(0, 200),
+      message:
+        typeof e["message"] === "string" ? e["message"].slice(0, 200) : String(error).slice(0, 200),
       hint: typeof e["hint"] === "string" ? e["hint"].slice(0, 200) : null,
     });
     return response(500, "processing failed");
