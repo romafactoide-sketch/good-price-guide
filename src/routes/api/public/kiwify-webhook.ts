@@ -73,7 +73,7 @@ async function handle(request: Request): Promise<Response> {
       return response(400, "invalid json");
     }
     // Webhook real da Kiwify: { order: { order_id, ... } }. Só o ID é usado; o resto vem da API.
-    const orderId = object(event.order).order_id ?? event.order_id;
+    const orderId = object(event["order"]).order_id ?? event.order_id;
     if (typeof orderId !== "string" || !/^[a-zA-Z0-9-]{8,80}$/.test(orderId))
       return response(400, "invalid order");
 
