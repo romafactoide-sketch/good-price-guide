@@ -97,7 +97,7 @@ export const plans: Record<PlanId, Plan> = {
   pro: {
     id: "pro",
     name: "Pro",
-    priceCents: 2990,
+    priceCents: 2900,
     tagline: "Para proteger sua margem todos os meses.",
     limits: { businesses: 1, products: null, ingredients: null },
     features: proFeatures,

@@ -16,7 +16,7 @@ const plans = [
   },
   {
     name: "Pro",
-    price: "R$ 29,90",
+    price: "R$ 29,00",
     period: "por mês",
     description: "Para quem vende todos os dias e quer margem protegida.",
     features: [
@@ -32,7 +32,7 @@ const plans = [
     name: "Anual",
     price: "R$ 247",
     period: "por ano, à vista (recorrente)",
-    description: "Todos os recursos Pro com economia de R$ 111,80 por ano.",
+    description: "Todos os recursos Pro com economia de R$ 101,00 por ano.",
     features: [
       "Todos os recursos Pro",
       "Produtos e insumos ilimitados",
