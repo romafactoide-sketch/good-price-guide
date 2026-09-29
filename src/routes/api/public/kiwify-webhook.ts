@@ -3,9 +3,10 @@ import { createFileRoute } from "@tanstack/react-router";
 // Webhook público (sem JWT): a Kiwify não envia sessão de usuário.
 // Fail-closed: a venda é conferida na API oficial da Kiwify antes de conceder o Pro.
 const offers = [
-  { product: "a7c0d800-babb-11f1-b862-8f9991c1f93d", amount: 2900, cycle: "monthly" },
-  { product: "a7c0d800-babb-11f1-b862-8f9991c1f93d", amount: 24700, cycle: "yearly" },
-  { product: "7e73c3d0-babc-11f1-845f-f15309390953", amount: 34700, cycle: "lifetime" },
+  // Mensal: R$ 29,00 é a venda já aprovada; R$ 29,90 é o preço planejado das próximas.
+  { product: "a7c0d800-babb-11f1-b862-8f9991c1f93d", amounts: [2900, 2990], cycle: "monthly" },
+  { product: "a7c0d800-babb-11f1-b862-8f9991c1f93d", amounts: [24700], cycle: "yearly" },
+  { product: "7e73c3d0-babc-11f1-845f-f15309390953", amounts: [34700], cycle: "lifetime" },
 ] as const;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -91,9 +92,11 @@ async function handle(request: Request): Promise<Response> {
     const payment = object(sale.payment);
     const customer = object(sale.customer);
     const product = object(sale.product);
-    // Valor bruto da oferta (sem juros de parcelamento): payment.product_base_price, em centavos.
-    const amount = payment["product_base_price"];
-    const offer = offers.find((item) => item.product === product.id && item.amount === amount);
+    // Valor bruto da oferta, em centavos: payment.charge_amount (fallback: product_base_price).
+    const amount = payment["charge_amount"] ?? payment["product_base_price"];
+    const offer = offers.find(
+      (item) => item.product === product.id && (item.amounts as readonly number[]).includes(amount),
+    );
     if (
       sale.id !== orderId ||
       !offer ||
