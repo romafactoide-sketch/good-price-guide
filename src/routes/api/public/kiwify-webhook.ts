@@ -72,7 +72,8 @@ async function handle(request: Request): Promise<Response> {
     } catch {
       return response(400, "invalid json");
     }
-    const orderId = event.order_id;
+    // Webhook real da Kiwify: { order: { order_id, ... } }. Só o ID é usado; o resto vem da API.
+    const orderId = object(event.order).order_id ?? event.order_id;
     if (typeof orderId !== "string" || !/^[a-zA-Z0-9-]{8,80}$/.test(orderId))
       return response(400, "invalid order");
 
@@ -90,17 +91,25 @@ async function handle(request: Request): Promise<Response> {
     const payment = object(sale.payment);
     const customer = object(sale.customer);
     const product = object(sale.product);
-    const amount = payment.charge_amount;
+    // Valor bruto da oferta (sem juros de parcelamento): payment.product_base_price, em centavos.
+    const amount = payment["product_base_price"];
     const offer = offers.find((item) => item.product === product.id && item.amount === amount);
     if (
       sale.id !== orderId ||
       !offer ||
-      payment.charge_currency !== "BRL" ||
+      sale["currency"] !== "BRL" ||
+      payment["product_base_currency"] !== "BRL" ||
       typeof customer.email !== "string" ||
       !customer.email.includes("@") ||
       typeof sale.approved_date !== "string" ||
       !Number.isFinite(Date.parse(sale.approved_date))
     ) {
+      console.warn("Kiwify sale rejected", {
+        idMatches: sale.id === orderId,
+        productKnown: offers.some((item) => item.product === product.id),
+        amount: typeof amount === "number" ? amount : null,
+        currency: typeof sale["currency"] === "string" ? sale["currency"] : null,
+      });
       return response(422, "sale does not match an offer");
     }
     const status =
