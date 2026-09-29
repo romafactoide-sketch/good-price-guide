@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { usePlan } from "@/components/app/paywall";
 import { plans } from "@/lib/plans";
 import { kiwifyOffers } from "@/lib/kiwify-offers";
+import { subscriptionQuery } from "@/lib/subscription";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/app/planos")({
@@ -29,13 +31,57 @@ export const Route = createFileRoute("/_authenticated/app/planos")({
 });
 
 function PlansPage() {
-  const { plan: currentPlan } = usePlan();
+  const { plan: currentPlan, loading } = usePlan();
+  const { data: subscription, isFetching, isError, refetch } = useQuery(subscriptionQuery);
+  const cycleName = {
+    monthly: "Mensal",
+    yearly: "Anual",
+    lifetime: "Vitalício",
+  }[subscription?.billing_cycle ?? ""];
+  const accessEnd = subscription?.expires_at
+    ? new Intl.DateTimeFormat("pt-BR", {
+        timeZone: "America/Sao_Paulo",
+        dateStyle: "long",
+        timeStyle: "short",
+      }).format(new Date(subscription.expires_at))
+    : null;
   return (
     <div className="grid gap-6">
       <PageHeader
         title="Planos"
         description="Proteja sua margem todos os meses. Escolha a forma de acesso Pro e finalize a compra na Kiwify."
       />
+
+      <section
+        className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-border bg-card p-5 shadow-soft"
+        aria-live="polite"
+      >
+        <div>
+          <p className="text-sm text-muted-foreground">Seu acesso no PreçoSadio</p>
+          <p className="mt-1 font-semibold text-foreground">
+            {loading
+              ? "Consultando plano..."
+              : currentPlan === "pro"
+                ? `Pro ${cycleName ?? ""}`.trim()
+                : "Free"}
+          </p>
+          {currentPlan === "pro" && accessEnd ? (
+            <p className="mt-1 text-sm text-muted-foreground">
+              Acesso registrado até {accessEnd} (horário de Brasília).
+            </p>
+          ) : currentPlan === "pro" && subscription?.billing_cycle === "lifetime" ? (
+            <p className="mt-1 text-sm text-muted-foreground">Acesso sem vencimento.</p>
+          ) : null}
+          {isError ? (
+            <p className="mt-1 text-sm text-destructive">
+              Não foi possível consultar seu plano. Tente atualizar.
+            </p>
+          ) : null}
+        </div>
+        <Button variant="subtle" disabled={isFetching} onClick={() => void refetch()}>
+          {isFetching ? "Atualizando..." : "Atualizar status"}
+        </Button>
+      </section>
 
       <div className="grid gap-4 lg:grid-cols-3">
         {[
@@ -87,7 +133,11 @@ function PlansPage() {
                 </li>
               ))}
             </ul>
-            {currentPlan === "pro" ? (
+            {loading || isError || isFetching ? (
+              <Button className="mt-6" variant="subtle" disabled>
+                Verificando plano...
+              </Button>
+            ) : currentPlan === "pro" ? (
               <Button className="mt-6" variant="subtle" disabled>
                 Você já tem acesso Pro
               </Button>
