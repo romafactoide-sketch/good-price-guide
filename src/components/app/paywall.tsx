@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Lock, Sparkles } from "lucide-react";
@@ -49,6 +49,18 @@ export function usePlan() {
 export function PaywallProvider({ children }: { children: ReactNode }) {
   const { data, isLoading } = useQuery(subscriptionQuery);
   const [request, setRequest] = useState<PaywallRequest | null>(null);
+  const [expiryTick, refreshExpiry] = useState(0);
+  useEffect(() => {
+    if (!data?.expires_at) return;
+    const remaining = new Date(data.expires_at).getTime() - Date.now();
+    if (!Number.isFinite(remaining) || remaining <= 0) return;
+    // setTimeout supports at most 2^31-1 ms; schedule again for longer plans.
+    const timer = window.setTimeout(
+      () => refreshExpiry((value) => value + 1),
+      Math.min(remaining + 1, 2_147_483_647),
+    );
+    return () => window.clearTimeout(timer);
+  }, [data?.expires_at, expiryTick]);
   const plan = effectivePlan(data ?? null);
 
   const value = useMemo<PlanContextValue>(
