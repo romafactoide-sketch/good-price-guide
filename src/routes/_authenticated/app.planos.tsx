@@ -34,7 +34,7 @@ function PlansPage() {
     <div className="grid gap-6">
       <PageHeader
         title="Planos"
-        description="Proteja sua margem todos os meses. Escolha a forma de acesso Pro. A contratação estará disponível após a conexão do checkout da Kiwify."
+        description="Proteja sua margem todos os meses. Escolha a forma de acesso Pro e finalize a compra na Kiwify."
       />
 
       <div className="grid gap-4 lg:grid-cols-3">
@@ -87,20 +87,29 @@ function PlansPage() {
                 </li>
               ))}
             </ul>
-            <Button
-              className="mt-6"
-              variant={offer.id === "yearly" ? "hero" : "subtle"}
-              disabled
-              title={kiwifyOffers[offer.id as keyof typeof kiwifyOffers].checkoutUrl}
-            >
-              {currentPlan === "pro" ? "Você já tem acesso Pro" : "Checkout em preparação"}
-            </Button>
+            {currentPlan === "pro" ? (
+              <Button className="mt-6" variant="subtle" disabled>
+                Você já tem acesso Pro
+              </Button>
+            ) : (
+              <Button asChild className="mt-6" variant={offer.id === "yearly" ? "hero" : "subtle"}>
+                <a
+                  href={kiwifyOffers[offer.id as keyof typeof kiwifyOffers].checkoutUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Assinar {offer.title}
+                </a>
+              </Button>
+            )}
           </div>
         ))}
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Nenhuma cobrança será realizada nesta página enquanto o checkout não estiver conectado.
+        Use na Kiwify o mesmo e-mail desta conta. O acesso Pro é liberado depois que o pagamento for
+        aprovado; ao voltar, atualize a página se necessário. Cancelamentos de assinaturas
+        recorrentes são feitos na Kiwify.
       </p>
     </div>
   );
