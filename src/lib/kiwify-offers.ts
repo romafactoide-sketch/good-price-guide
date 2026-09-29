@@ -4,7 +4,7 @@ export const kiwifyOffers = {
     productId: "a7c0d800-babb-11f1-b862-8f9991c1f93d",
     checkoutCode: "RGDMcYQ",
     checkoutUrl: "https://pay.kiwify.com.br/RGDMcYQ",
-    priceCents: 2990,
+    priceCents: 2900,
     billingCycle: "monthly",
   },
   yearly: {

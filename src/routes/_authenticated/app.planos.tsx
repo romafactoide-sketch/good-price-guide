@@ -42,7 +42,7 @@ function PlansPage() {
           {
             id: "monthly",
             title: "Mensal",
-            price: "R$ 29,90",
+            price: "R$ 29,00",
             period: "/mês",
             detail: "Renovação mensal",
           },
@@ -71,7 +71,7 @@ function PlansPage() {
             <div className="flex items-center justify-between gap-2">
               <h2 className="text-lg font-bold text-foreground">{offer.title}</h2>
               {offer.id === "yearly" ? (
-                <Badge variant="success">Economize R$ 111,80/ano</Badge>
+                <Badge variant="success">Economize R$ 101,00/ano</Badge>
               ) : null}
             </div>
             <p className="mt-1 text-sm text-muted-foreground">{offer.detail}</p>
