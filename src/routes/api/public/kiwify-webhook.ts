@@ -55,6 +55,7 @@ async function apiToken(): Promise<string> {
 }
 
 async function handle(request: Request): Promise<Response> {
+  let step = "auth";
   try {
     const expected = required("KIWIFY_WEBHOOK_PATH_SECRET");
     const supplied = new URL(request.url).searchParams.get("key") ?? "";
@@ -82,12 +83,14 @@ async function handle(request: Request): Promise<Response> {
       `https://public-api.kiwify.com/v1/sales/${encodeURIComponent(orderId)}`,
       {
         headers: {
-          Authorization: `Bearer ${await apiToken()}`,
+          Authorization: `Bearer ${await (step = "oauth", apiToken())}`,
           "x-kiwify-account-id": required("KIWIFY_ACCOUNT_ID"),
         },
       },
     );
+    step = "sale_lookup";
     if (!saleResult.ok) throw new Error(`Kiwify sale lookup HTTP ${saleResult.status}`);
+    step = "validation";
     const sale = object(await saleResult.json());
     const payment = object(sale.payment);
     const customer = object(sale.customer);
@@ -123,6 +126,7 @@ async function handle(request: Request): Promise<Response> {
           : null;
     if (!status) return response(202, "sale not settled");
 
+    step = "database";
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin.rpc("apply_verified_kiwify_sale", {
       p_order_id: orderId,
@@ -135,7 +139,14 @@ async function handle(request: Request): Promise<Response> {
     if (error) throw error;
     return response(200, String(data));
   } catch (error) {
-    console.error("Kiwify webhook error", error instanceof Error ? error.message : "unknown");
+    const e = object(error);
+    console.error("Kiwify webhook error", {
+      step,
+      name: typeof e["name"] === "string" ? e["name"] : typeof error,
+      code: typeof e["code"] === "string" ? e["code"] : null,
+      message: typeof e["message"] === "string" ? e["message"].slice(0, 200) : String(error).slice(0, 200),
+      hint: typeof e["hint"] === "string" ? e["hint"].slice(0, 200) : null,
+    });
     return response(500, "processing failed");
   }
 }
