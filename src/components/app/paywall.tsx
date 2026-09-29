@@ -55,7 +55,10 @@ export function PaywallProvider({ children }: { children: ReactNode }) {
     const remaining = new Date(data.expires_at).getTime() - Date.now();
     if (!Number.isFinite(remaining) || remaining <= 0) return;
     // setTimeout supports at most 2^31-1 ms; schedule again for longer plans.
-    const timer = window.setTimeout(() => refreshExpiry((value) => value + 1), Math.min(remaining + 1, 2_147_483_647));
+    const timer = window.setTimeout(
+      () => refreshExpiry((value) => value + 1),
+      Math.min(remaining + 1, 2_147_483_647),
+    );
     return () => window.clearTimeout(timer);
   }, [data?.expires_at, expiryTick]);
   const plan = effectivePlan(data ?? null);
